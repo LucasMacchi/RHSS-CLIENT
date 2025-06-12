@@ -15,3 +15,28 @@ export interface INovedad {
     numero: string,
     categoria: string
 }
+
+export interface INovFilter {
+    fecha_inicio: string,
+    fecha_final:string,
+    categoria: string,
+    solicitante: string,
+    empresa_id: number
+}
+
+export interface IEmpresa {
+    empresa_id: number,
+    nombre: string
+}
+
+export interface IUsuario {
+        nombre: string,
+        apellido: string,
+        admin: boolean,
+        administrativo: boolean,
+        email: string,
+        empresa_id: number,
+        username: string,
+        fecha_creacion: string,
+        activado: boolean
+}

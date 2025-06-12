@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
-import type { IEmpresa, INovedad, INovFilter, IUsuario } from "../utils/interfaces";
-import sessionChecker from "../utils/sessionChecker";
+import { useState,useEffect } from "react";
 import Header from "./Header";
+import type { IEmpresa, INovedad, INovFilter } from "../utils/interfaces";
 import getNovedades from "../utils/getNovedades";
-import { getCategoriasNov, getEmpresas, getUsuarios } from "../utils/getData";
+import { getCategoriasNov, getEmpresas } from "../utils/getData";
+import sessionChecker from "../utils/sessionChecker";
 import logoutFn from "../utils/logoutFn";
 
+export default function MisNovedades () {
 
-
-export default function Novedades () {
 
     const [novedades, setNovedades] = useState<INovedad[]>([])
     const [empresa, setEmpresa] = useState(0)
@@ -20,16 +19,14 @@ export default function Novedades () {
     const [load, setLoading] = useState(false)
     const [empresasSele, setEmpresasSele] = useState<IEmpresa[]>([])
     const [categoriasSele, setCategoriesSele] = useState<string[]>([])
-    const [usuarios, setUsuarios] = useState<IUsuario[]>([])
-
     
     useEffect(() => {
         getEmpresas().then(em=>setEmpresasSele(em))
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
-        getUsuarios().then(us=>setUsuarios(us))
         sessionChecker()
         .then(d => {
             if(d.username.length > 0) {
+                setSolicitante(d.username)
                 if(!d.administrativo) window.location.href = '/login'
             }
             else{
@@ -130,7 +127,7 @@ export default function Novedades () {
     return(
         <div style={{textAlign: "center"}}>
             <Header/>
-            <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff"}}>Novedades</h1>
+            <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff"}}>Mis Novedades</h1>
             <hr color='#3399ff'/>
             <div>
             <div style={{
@@ -149,16 +146,6 @@ export default function Novedades () {
                         <option value={0}>---</option>
                         {empresasSele.map((e) => (
                             <option key={e.empresa_id+e.nombre} value={e.empresa_id}>{e.nombre}</option>
-                        ))}
-                    </select>
-                </div>
-                <div style={filterDivStyle}>
-                    <h3 style={filterTitle}>Solicitante</h3>
-                    <select name="causa" id="causa-selecet" style={filterSelect} disabled={nroChecker()}
-                    onChange={e=>setSolicitante(e.target.value)} value={solicitnate}>
-                        <option value={''}>---</option>
-                        {usuarios.map((u) => (
-                            <option key={u.username+u.nombre} value={u.username}>{u.username}</option>
                         ))}
                     </select>
                 </div>
@@ -190,5 +177,4 @@ export default function Novedades () {
             {novedadesDisplay()}
         </div>
     )
-    
 }

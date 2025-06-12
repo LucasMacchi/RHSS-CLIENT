@@ -3,6 +3,7 @@ import sessionChecker from "../utils/sessionChecker"
 import type { INovedad } from "../utils/interfaces"
 import todayNovedades from "../utils/todayNovedades"
 import Header from "./Header"
+import logoutFn from "../utils/logoutFn"
 
 export default function NovedadesPage () {
 
@@ -10,13 +11,17 @@ export default function NovedadesPage () {
 
     useEffect(() => {
         sessionChecker()
-        .then(d => d.username.length > 0 ? console.log('log') : window.location.href = '/login')
+        .then(d => {
+            if(d.username.length > 0) {
+                if(!d.administrativo) window.location.href = '/login'
+            }
+            else{
+                logoutFn()
+                window.location.href = '/login'
+            }
+        })
         todayNovedades().then(novs => setNovedades(novs))
     },[])
-
-    useEffect(() => {
-        console.log(novedades)
-    },[novedades])
 
     const novedadesDisplay = () => {
         if(novedades.length > 0 ) {
@@ -24,7 +29,7 @@ export default function NovedadesPage () {
             <div style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
                 {novedades.map((n) => (
                     <div key={n.numero} style={{
-                        width: "350px",
+                        width: "450px",
                         backgroundColor: "#6495ed",
                         display: "flex",
                         justifyContent: "space-around",

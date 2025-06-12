@@ -9,10 +9,11 @@ export default function Login () {
     const [load, setLoading] = useState(false)
 
     useEffect(() => {
-        const res = sessionChecker()
-        res.then(d => d.username.length > 0 ?
-            window.location.href = '/' : console.log("no log")
-        )
+        sessionChecker().then(d => {
+            if(d.username.length > 0) {
+                if(d.administrativo) window.location.href = '/'
+            }
+        })
     },[])
 
     const loginAction = async () => {
@@ -25,7 +26,7 @@ export default function Login () {
         }
         else{
             setLoading(false)
-            window.location.reload()
+            window.location.href = '/'
         }
         
     }
