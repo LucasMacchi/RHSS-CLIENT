@@ -3,15 +3,15 @@ import Header from "./Header";
 import type { IEmpresa, INovedad, INovFilter } from "../utils/interfaces";
 import getNovedades from "../utils/getNovedades";
 import { getCategoriasNov, getEmpresas } from "../utils/getData";
-import sessionChecker from "../utils/sessionChecker";
-import logoutFn from "../utils/logoutFn";
+
+import session from "../utils/session";
 
 export default function MisNovedades () {
 
 
     const [novedades, setNovedades] = useState<INovedad[]>([])
     const [empresa, setEmpresa] = useState(0)
-    const [solicitnate, setSolicitante] = useState('')
+    const [solicitnate, _setSolicitante] = useState('')
     const [categoria, setCategoria] = useState('')
     const [numero, setNumero] = useState('')
     const [dateStart, setDateStart] = useState('')
@@ -20,20 +20,12 @@ export default function MisNovedades () {
     const [empresasSele, setEmpresasSele] = useState<IEmpresa[]>([])
     const [categoriasSele, setCategoriesSele] = useState<string[]>([])
     
+
+    session(true)
+    
     useEffect(() => {
         getEmpresas().then(em=>setEmpresasSele(em))
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
-        sessionChecker()
-        .then(d => {
-            if(d.username.length > 0) {
-                setSolicitante(d.username)
-                if(!d.administrativo) window.location.href = '/login'
-            }
-            else{
-                logoutFn()
-                window.location.href = '/login'
-            }
-        })
     },[])
 
     useEffect(() => {setNovedades([])},[numero])

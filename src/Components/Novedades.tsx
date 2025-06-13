@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import type { IEmpresa, INovedad, INovFilter, IUsuario } from "../utils/interfaces";
-import sessionChecker from "../utils/sessionChecker";
 import Header from "./Header";
 import getNovedades from "../utils/getNovedades";
 import { getCategoriasNov, getEmpresas, getUsuarios } from "../utils/getData";
-import logoutFn from "../utils/logoutFn";
+import session from "../utils/session";
 
 
 
@@ -22,21 +21,12 @@ export default function Novedades () {
     const [categoriasSele, setCategoriesSele] = useState<string[]>([])
     const [usuarios, setUsuarios] = useState<IUsuario[]>([])
 
-    
+    session(true)
+
     useEffect(() => {
         getEmpresas().then(em=>setEmpresasSele(em))
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
         getUsuarios().then(us=>setUsuarios(us))
-        sessionChecker()
-        .then(d => {
-            if(d.username.length > 0) {
-                if(!d.administrativo) window.location.href = '/login'
-            }
-            else{
-                logoutFn()
-                window.location.href = '/login'
-            }
-        })
     },[])
 
     useEffect(() => {setNovedades([])},[numero])
@@ -145,7 +135,7 @@ export default function Novedades () {
                 <div style={filterDivStyle}>
                     <h3 style={filterTitle}>Empresa</h3>
                     <select name="causa" id="causa-selecet" style={filterSelect} disabled={nroChecker()}
-                    onChange={e=>setEmpresa(parseInt(e.target.value))} value={empresa}>
+                    onChange={e=>setEmpresa(parseInt(e.target.value))}>
                         <option value={0}>---</option>
                         {empresasSele.map((e) => (
                             <option key={e.empresa_id+e.nombre} value={e.empresa_id}>{e.nombre}</option>

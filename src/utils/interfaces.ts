@@ -30,13 +30,28 @@ export interface IEmpresa {
 }
 
 export interface IUsuario {
-        nombre: string,
-        apellido: string,
-        admin: boolean,
-        administrativo: boolean,
-        email: string,
-        empresa_id: number,
-        username: string,
-        fecha_creacion: string,
-        activado: boolean
+    nombre: string,
+    apellido: string,
+    admin: boolean,
+    administrativo: boolean,
+    email: string,
+    empresa_id: number,
+    username: string,
+    fecha_creacion: string,
+    activado: boolean
+}
+
+export interface INovDto {
+    causa: string,
+    solicitante: string,
+    empresa_id?: number,
+    legajo: number,
+    categoria: string
+}
+
+export interface ILegajo {
+    legajo: number, 
+    fullname: string,
+    cuil: number,
+    sector: string
 }

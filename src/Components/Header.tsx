@@ -9,7 +9,7 @@ export default function Header () {
     const location = useLocation();
 
     useEffect(() => {
-        if(location.pathname !== "/login"){
+        if(location.pathname !== "/login" && location.pathname !== "/Crear"){
             setNavbar(true)
         }
         else {
@@ -43,7 +43,7 @@ export default function Header () {
                     <div style={{padding: "10px"}}>
                         <Link style={linkStyle} to={'/'}>Pagina Principal</Link>
                         <Link style={linkStyle} to={'/Novedades'}>Novedades</Link>
-                        <Link style={linkStyle} to={'/legajos'}>Legajos</Link>
+                        <Link style={linkStyle} to={'/Legajos'}>Legajos</Link>
                         <Link style={linkStyle} to={'/Misnovedades'}>Mis Novedades</Link>
                         <Link style={linkStyle} to={'/Nueva'}>Crear Novedad</Link>
                     </div>
