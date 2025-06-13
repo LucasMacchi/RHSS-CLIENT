@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import session from "../utils/session";
 import Header from "./Header";
 import type { ILegajo } from "../utils/interfaces";
