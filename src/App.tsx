@@ -6,6 +6,7 @@ import MisNovedades from "./Components/MisNovedades"
 import CrearNovedad from "./Components/CrearNovedad"
 import CrearNovedadS from "./Components/CrearNovedadS"
 import Legajos from "./Components/Legajos"
+import NovedadDetail from "./Components/NovedadDetail"
 function App() {
   return (
     <div>
@@ -18,6 +19,7 @@ function App() {
           <Route path="/Nueva" element={<CrearNovedad/>}/>
           <Route path="/Crear" element={<CrearNovedadS/>}/>
           <Route path="/Legajos" element={<Legajos/>}/>
+          <Route path="/Novedad/:id" element={<NovedadDetail/>}/>
         </Routes>
       </BrowserRouter>
     </div>

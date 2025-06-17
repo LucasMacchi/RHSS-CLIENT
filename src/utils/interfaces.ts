@@ -55,3 +55,55 @@ export interface ILegajo {
     cuil: number,
     sector: string
 }
+
+export interface IAusente {
+    ausente_id: number,
+    justificado: boolean,
+    fecha: string,
+    fecha_ausentada: string,
+    novedad_id: number,
+    legajo: number,
+    causa: string
+}
+
+export interface ISancion {
+    sancion_id: number,
+    legajo: number,
+    fecha: string,
+    tipo: string,
+    fecha_inicio: string,
+    fecha_final: string,
+    causa: string,
+    novedad_id: number
+}
+
+export interface IPersonal {
+    personal_id: number,
+    legajo: number,
+    fecha: string,
+    fecha_ocurrido: string,
+    categoria: string,
+    causa: string,
+    novedad_id: number
+}
+
+export interface ILicencia {
+    licencia_id: number,
+    legajo: number,
+    fecha: string,
+    fecha_salida: string,
+    fecha_entrada: string,
+    categoria: string,
+    causa: string,
+    novedad_id: number
+}
+
+export interface INovLeg {
+    legajo: ILegajo,
+    novedad: INovedad,
+    ausentes: IAusente[],
+    sanciones: ISancion[],
+    personal: IPersonal[],
+    licencias: ILicencia[]
+
+}
