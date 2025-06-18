@@ -107,3 +107,12 @@ export interface INovLeg {
     licencias: ILicencia[]
 
 }
+
+export interface IAction {
+    legajo: number,
+    fecha: string,
+    fecha_inicial?: string,
+    fecha_final?: string,
+    categoria: string,
+    causa: string
+}

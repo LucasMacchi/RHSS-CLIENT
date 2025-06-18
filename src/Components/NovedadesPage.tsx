@@ -36,8 +36,8 @@ export default function NovedadesPage () {
                         margin: "20px",
                         borderRadius: "3px",
                         color: "white",
-                        cursor: "pointer"
-                    }}>
+                        cursor: "pointer"}}
+                        onClick={() => window.location.href = '/Novedad/'+n.novedad_id}>
                         <h3>{n.numero}</h3>
                         <h3>{n.fecha}</h3>
                         <h3>{n.categoria}</h3>

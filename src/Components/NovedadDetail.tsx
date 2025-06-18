@@ -1,11 +1,12 @@
 import { useState,useEffect } from "react";
-import type { IAusente, IEmpresa, INovedad, INovLeg } from "../utils/interfaces";
+import type {IAction, IEmpresa, INovedad, INovLeg } from "../utils/interfaces";
 import { useParams } from "react-router";
 import Header from "./Header";
 import getUniqNovedad from "../utils/getUniqNovedad";
 import { getCategoriasNov, getEmpresas } from "../utils/getData";
 import getNovedadesLegajo from "../utils/getNovedadesLegajo";
 import session from "../utils/session";
+import { createAusenteFn, createLicenciaFn, createPersonalFn, createSancionFn } from "../utils/createActions";
 
 
 export default function NovedadDetail () {
@@ -22,11 +23,18 @@ export default function NovedadDetail () {
         date_end: '',
         causa: ''
     })
+    const [action, setAction] = useState<IAction> ({
+        legajo: 0,
+        fecha: '',
+        categoria: '',
+        causa: ''
+    })
 
 
     const textStyle: React.CSSProperties = {
         fontWeight: "normal",
-        color: "#3399ff"
+        color: "#3399ff",
+        margin: "5px"
     }
     const parrafoStyle: React.CSSProperties = {
         fontWeight: "normal",
@@ -34,9 +42,16 @@ export default function NovedadDetail () {
         overflowWrap: 'break-word'
     }
     const sectionStyle: React.CSSProperties = {
-        maxHeight: "300px",
+        maxHeight: "350px",
         display: "inline-block",
-        marginLeft: "10px"
+        marginLeft: "10px",
+        height: "100%"
+    }
+    const sectionActionStyle: React.CSSProperties = {
+        maxHeight: "326px",
+        display: "inline-block",
+        marginLeft: "10px",
+        height: "100%"
     }
     session(true)
     
@@ -69,7 +84,12 @@ export default function NovedadDetail () {
     const filterSelect: React.CSSProperties = {
         fontSize: "large", width: "350px"
     }
-
+    const btnRegister: React.CSSProperties = {
+        color: "white", backgroundColor: "#3399ff", fontSize: "large", width: "200 px", height: "40px"
+    }
+    const textAreaStyle: React.CSSProperties = {
+        width: "350px", maxWidth: "300px", height: "120px", resize: "none", overflow: "scroll"
+    }
 
     const empresaGetter = (id: number | undefined): string => {
         if(novedad && novedad.novedad.empresa_id) {
@@ -97,28 +117,151 @@ export default function NovedadDetail () {
         })
     }
 
-    const createAusente = () => {
-        const ausente = {
-            fecha_ausente: data.date_start,
-            justificado: dataCheck,
-            legajo: novedad?.legajo.legajo,
-            novedad_id: novedad?.novedad.novedad_id,
-            causa: data.causa
+    const handleActionData = (legajo: number, fecha: string, causa: string, categoria: string, fecha_inicial?:string, fecha_final?:string) => {
+        const data: IAction = {
+            legajo,
+            fecha,
+            causa,
+            categoria,
+            fecha_inicial,
+            fecha_final
         }
+        setAction(data)
+    }
+
+    const createAusente = async () => {
+        if(confirm('Quieres crear la accion?') && novedad && data.causa.length > 50 && data.date_start.length > 0) {
+            const ausente = {
+                fecha_ausente: data.date_start,
+                justificado: dataCheck,
+                legajo: novedad.legajo.legajo,
+                novedad_id: novedad.novedad.novedad_id,
+                causa: data.causa
+            }
+            const res = await createAusenteFn(ausente)
+            if(res) {
+                alert("Ausente creado.")
+                window.location.reload()
+                setData({date_end: '',date_start: '',causa: ''})
+            }
+            else alert("Error al crear ausente.")
+        } else alert("Debe ingresar una causa con no menos de 50 caracteres y una fecha valida.")
+    }
+    const createPersonal = async () => {
+        if(confirm('Quieres crear la accion?') && novedad && data.causa.length > 50 && data.date_start.length > 0) {
+            const personal = {
+                fecha_ocurrido: data.date_start,
+                categoria: categoriasSele[categoria - 1],
+                legajo: novedad.legajo.legajo,
+                novedad_id: novedad.novedad.novedad_id,
+                causa: data.causa
+            }
+            const res = await createPersonalFn(personal)
+            if(res) {
+                alert("Incidente creado.")
+                window.location.reload()
+                setData({date_end: '',date_start: '',causa: ''})
+            }
+            else alert("Error al crear Incidente.")
+        } else alert("Debe ingresar una causa con no menos de 50 caracteres y una fecha valida.")
+    }
+    const createLicencia = async () => {
+        if(confirm('Quieres crear la accion?') && novedad && data.causa.length > 50 && data.date_start.length > 0 && data.date_end.length > 0) {
+            const licencia = {
+                fecha_salida: data.date_start,
+                fecha_entrada: data.date_end,
+                legajo: novedad.legajo.legajo,
+                novedad: novedad.novedad.novedad_id,
+                causa: data.causa,
+                categoria: categoriasSele[categoria - 1]
+            }
+            const res = await createLicenciaFn(licencia)
+            if(res) {
+                alert("Licencia creada.")
+                window.location.reload()
+                setData({date_end: '',date_start: '',causa: ''})
+            }
+            else alert("Error al crear la licencia.")
+        } else alert("Debe ingresar una causa con no menos de 50 caracteres y una fecha valida de salida y entrada.")
+    }
+    const createSancion = async (suspencion: boolean) => {
+        if(suspencion) {
+            if(confirm('Quieres crear la accion?') && novedad && data.causa.length > 50 && data.date_start.length > 0 && data.date_end.length > 0) {
+                const sancion = {
+                    fecha_inicio: data.date_start,
+                    fecha_final: data.date_end,
+                    legajo: novedad.legajo.legajo,
+                    novedad_id: novedad.novedad.novedad_id,
+                    causa: data.causa,
+                    tipo: "SUSPENCION"
+                }
+                const res = await createSancionFn(sancion)
+                if(res) {
+                    alert("Sancion creado.")
+                    window.location.reload()
+                    setData({date_end: '',date_start: '',causa: ''})
+                }
+                else alert("Error al crear la sancion.")
+            } else alert("Debe ingresar una causa con no menos de 50 caracteres y una fecha valida de inicio y final.")
+        }
+        else {
+            if(confirm('Quieres crear la accion?') && novedad && data.causa.length > 50) {
+                const sancion = {
+                    legajo: novedad.legajo.legajo,
+                    novedad_id: novedad.novedad.novedad_id,
+                    causa: data.causa,
+                    tipo: "APERCIBIMIENTO"
+                }
+                const res = await createSancionFn(sancion)
+                if(res) {
+                    alert("Ausente creado.")
+                    window.location.reload()
+                    setData({date_end: '',date_start: '',causa: ''})
+                }
+                else alert("Error al crear la sancion.")
+            } else alert("Debe ingresar una causa con no menos de 50 caracteres y una fecha valida.")
+        }
+
     }
 
     const displayForms = () => {
         switch(categoria) {
             case 1:
                 return(
-                    <div>
-                        <h1>Suspension</h1>
+                    <div style={sectionActionStyle} >
+                        <h3 id="titulo" style={textStyle}>Fecha de inicio: 
+                            <input type="date" value={data.date_start} onChange={e => handleData('date_start',e.target.value)}/>
+                        </h3>
+                        <h3 id="titulo" style={textStyle}>Fecha de final: 
+                            <input type="date" value={data.date_end} onChange={e => handleData('date_end',e.target.value)}/>
+                        </h3>
+                        <div>
+                            <h3 id="subtitulo" style={textStyle}>
+                                Descripcion
+                            </h3>
+                            <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
+                            style={textAreaStyle}/>
+                        </div>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createSancion(true)}>Registrar Sancion</button>
+                        </div>
                     </div>
                 )
             case 2:
                 return(
-                    <div>
-                        <h1>Apercibimiento</h1>
+                    <div style={sectionActionStyle}>
+                        <div>
+                            <h3 id="subtitulo" style={textStyle}>
+                                Descripcion
+                            </h3>
+                            <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
+                            style={textAreaStyle}/>
+                        </div>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createSancion(false)}>Registrar Sancion</button>
+                        </div>
                     </div>
                 )
             case 3:
@@ -126,8 +269,24 @@ export default function NovedadDetail () {
             case 5:
             case 6:
                 return(
-                    <div>
-                        <h1>Licencias</h1>
+                    <div style={sectionActionStyle}>
+                        <h3 id="titulo" style={textStyle}>Fecha de salida: 
+                            <input type="date" value={data.date_start} onChange={e => handleData('date_start',e.target.value)}/>
+                        </h3>
+                        <h3 id="titulo" style={textStyle}>Fecha de entrada: 
+                            <input type="date" value={data.date_end} onChange={e => handleData('date_end',e.target.value)}/>
+                        </h3>
+                        <div>
+                            <h3 id="subtitulo" style={textStyle}>
+                                Descripcion
+                            </h3>
+                            <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
+                            style={textAreaStyle}/>
+                        </div>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createLicencia()}>Registrar Licencia</button>
+                        </div>
                     </div>
                 )
             case 7:
@@ -136,13 +295,26 @@ export default function NovedadDetail () {
             case 10:
             case 11:
                 return(
-                    <div>
-                        <h1>Personal</h1>
+                    <div style={sectionActionStyle}>
+                        <h3 id="titulo" style={textStyle}>Fecha Ocurrido: 
+                            <input type="date" value={data.date_start} onChange={e => handleData('date_start',e.target.value)}/>
+                        </h3>
+                        <div>
+                            <h3 id="subtitulo" style={textStyle}>
+                                Descripcion
+                            </h3>
+                            <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
+                            style={textAreaStyle}/>
+                        </div>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createPersonal()}>Registrar Situacion</button>
+                        </div>
                     </div>
                 )
             case 12:
                 return(
-                    <div>
+                    <div style={sectionActionStyle}>
                         <h3 id="titulo" style={textStyle}>Fecha: 
                             <input type="date" value={data.date_start} onChange={e => handleData('date_start',e.target.value)}/>
                         </h3>
@@ -150,24 +322,42 @@ export default function NovedadDetail () {
                             <input type="checkbox" checked={dataCheck} onChange={e => setDataCherck(e.target.checked)}/>
                         </h3>
                         <div>
-                            <h3 id="subtitulo" style={{fontWeight: "normal", color: "#3399ff"}}>
+                            <h3 id="subtitulo" style={textStyle}>
                                 Descripcion
                             </h3>
                             <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
-                            style={{width: "350px", maxWidth: "300px", height: "200px", resize: "none"}}/>
+                            style={textAreaStyle}/>
                         </div>
                         <div>
-                            <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}}
+                            <button id="bg-btn" style={btnRegister}
                             onClick={() => createAusente()}>Registrar Ausente</button>
                         </div>
                     </div>
                 )
             default:
                 return(
-                <div>
+                <div style={sectionActionStyle}>
                     <h3 id="titulo" style={textStyle}>Ninguna categoria seleccionada.</h3>
                 </div>
                 )
+        }
+    }
+
+    const displayAction = () => {
+        if(action.legajo) {
+            return (
+                <div>
+                    <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>{action.categoria +" - "+action.fecha}</h2>
+                    <hr color='#3399ff' style={{width: "100%"}}/>
+                    <h3 id="titulo" style={textStyle}>Fecha de lo ocurrido o inicial: {action.fecha}</h3>
+                    {action.fecha_final  ? 
+                    <h3 id="titulo" style={textStyle}>Fecha final: {action.fecha_inicial}</h3> : ''}
+                    <h3 id="titulo" style={textStyle}>Causa:</h3>
+                    <div style={{textAlign: "start", width: "400px"}}>
+                        <p id="titulo" style={parrafoStyle}>{action.causa}</p>
+                    </div>
+                </div>
+            )
         }
     }
 
@@ -193,7 +383,7 @@ export default function NovedadDetail () {
                     <h3 id="titulo" style={textStyle}>Sector: {novedad?.legajo.sector}</h3>
                 </div>
                 <div style={sectionStyle}>
-                    <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Causa y Categoria de la Novedad</h2>
+                    <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Causa de la Novedad</h2>
                     <hr color='#3399ff'/>
                     <h3 id="titulo" style={textStyle}>Catergoria: {novedad?.novedad.categoria}</h3>
                     <h3 id="titulo" style={textStyle}>Causa:</h3>
@@ -213,7 +403,7 @@ export default function NovedadDetail () {
                     ))}
                 </select>
                 {displayForms()}
-
+                {displayAction()}
             </div>
             <div style={{display: "flex", flexDirection: "column",width: "620px", marginRight: "5px"}}>
                 <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Historial del Legajo</h2>
@@ -229,7 +419,8 @@ export default function NovedadDetail () {
                                 <th style={novTr}>Solicitante</th>
                             </tr>
                             {novedadesLeg.map((n) => (
-                            <tr onClick={() => window.location.href = '/Novedad/'+n.novedad_id}>
+                            <tr onClick={() => window.location.href = '/Novedad/'+n.novedad_id} 
+                            style={{backgroundColor: novedad?.novedad.novedad_id === n.novedad_id ? "#3399ff" : "white"}}>
                                 <th style={novTr}>{n.numero}</th>
                                 <th style={novTr}>{n.categoria}</th>
                                 <th style={novTr}>{n.fecha}</th>
@@ -256,28 +447,28 @@ export default function NovedadDetail () {
                                 <th style={novTr}>Categoria</th>
                             </tr>
                             {novedad?.ausentes.map((n) => (
-                            <tr>
+                            <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, "Ausente", n.fecha_ausentada)}>
                                 <th style={novTr}>Ausente</th>
                                 <th style={novTr}>{n.fecha}</th>
                                 <th style={novTr}>{n.justificado ? "Justificado" : "No Justificado"}</th>
                             </tr>
                             ))}
                             {novedad?.licencias.map((n) => (
-                            <tr>
+                            <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.categoria, n.fecha_salida, n.fecha_entrada)}>
                                 <th style={novTr}>Licencia</th>
                                 <th style={novTr}>{n.fecha}</th>
                                 <th style={novTr}>{n.categoria}</th>
                             </tr>
                             ))}
                             {novedad?.personal.map((n) => (
-                            <tr>
+                            <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.categoria, n.fecha_ocurrido)}>
                                 <th style={novTr}>Personal</th>
                                 <th style={novTr}>{n.fecha}</th>
                                 <th style={novTr}>{n.categoria}</th>
                             </tr>
                             ))}
                             {novedad?.sanciones.map((n) => (
-                            <tr>
+                            <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.tipo, n.fecha_inicio, n.fecha_final)}>
                                 <th style={novTr}>Sancion</th>
                                 <th style={novTr}>{n.fecha}</th>
                                 <th style={novTr}>{n.tipo}</th>
@@ -289,7 +480,6 @@ export default function NovedadDetail () {
                 </div>
             </div>
             </div>
-
         </div>
     )
 }

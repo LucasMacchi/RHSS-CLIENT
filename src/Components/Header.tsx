@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import logo from "../assets/logo_big.webp";
 import { Link, useLocation } from "react-router";
 import logoutFn from "../utils/logoutFn";
+import sessionChecker from "../utils/sessionChecker";
 
 export default function Header () {
 
     const [navbar, setNavbar] = useState(false)
+    const [admin, setAdmin] = useState(false)
     const location = useLocation();
 
     useEffect(() => {
@@ -15,6 +17,7 @@ export default function Header () {
         else {
             setNavbar(false)
         }
+        sessionChecker().then(s => setAdmin(s.admin))
     },[location])
 
     const linkStyle: React.CSSProperties = { height: "auto", border: "1px solid", borderColor: "black",
@@ -46,9 +49,10 @@ export default function Header () {
                         <Link style={linkStyle} to={'/Legajos'}>Legajos</Link>
                         <Link style={linkStyle} to={'/Misnovedades'}>Mis Novedades</Link>
                         <Link style={linkStyle} to={'/Nueva'}>Crear Novedad</Link>
+                        {admin && <Link style={linkStyle} to={'/Usuarios'}>Usuarios</Link>}
                     </div>
                     <div style={{padding: "10px"}}>
-                        <a href="" style={linkStyle} onClick={() => logout()}>Cerrar Sesion</a>
+                        <a href="" style={{...linkStyle, backgroundColor: "red"}} onClick={() => logout()}>Cerrar Sesion</a>
                     </div>
                 </div>
                 </div>
