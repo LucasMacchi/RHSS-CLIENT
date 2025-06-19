@@ -95,3 +95,25 @@ export async function createUsuarioFn (data: IUsuarioDto): Promise<boolean> {
         return false
     }
 }
+
+export async function activateUser(userId:number) {
+    console.log("Activando usuario")
+    try {
+        await axios.patch(SERVER+"/usuario/activate/"+userId, {},{withCredentials: true})
+        alert("Usuario activado.")
+        window.location.reload()
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function deactivateUser(userId:number) {
+    console.log("Desactivando usuario")
+    try {
+        await axios.patch(SERVER+"/usuario/deactivate/"+userId, {},{withCredentials: true})
+        alert("Usuario desactivado.")
+        window.location.reload()
+    } catch (error) {
+        console.log(error)
+    }
+}

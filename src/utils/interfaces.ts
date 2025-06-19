@@ -38,7 +38,8 @@ export interface IUsuario {
     empresa_id: number,
     username: string,
     fecha_creacion: string,
-    activado: boolean
+    activado: boolean,
+    usuario_id: number
 }
 
 export interface INovDto {

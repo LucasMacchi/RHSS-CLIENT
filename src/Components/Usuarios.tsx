@@ -3,7 +3,7 @@ import session from "../utils/session";
 import Header from "./Header";
 import type { IEmpresa, IUsuario } from "../utils/interfaces";
 import { getEmpresas, getUsuarios } from "../utils/getData";
-import { createUsuarioFn } from "../utils/createActions";
+import { activateUser, createUsuarioFn, deactivateUser } from "../utils/createActions";
 
 
 export default function Usuarios () {
@@ -88,6 +88,14 @@ export default function Usuarios () {
         }else alert("Faltan datos.")
     }
 
+    async function activate(id:number) {
+        if(confirm("Quieres activar este usuario?")) activateUser(id)
+    }
+
+    async function deactivate(id:number) {
+        if(confirm("Quieres desactivar este usuario?")) deactivateUser(id)
+    }
+
     return (
         <div>
             <Header/>
@@ -109,7 +117,7 @@ export default function Usuarios () {
                                 <th style={novTr}>Activado</th>
                             </tr>
                             {usuarios.map((u) => (
-                                <tr>
+                                <tr onClick={() => u.activado ? deactivate(u.usuario_id) : activate(u.usuario_id)}>
                                     <th style={novTr}>{u.nombre}</th>
                                     <th style={novTr}>{u.apellido}</th>
                                     <th style={novTr}>{u.username}</th>
@@ -124,7 +132,7 @@ export default function Usuarios () {
                         </tbody>
                     </table>
                 </div>
-                <div>
+                <div style={{marginLeft: "20px", height: "600px"}}>
                     <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Crear Usuario</h1>
                     <hr color='#3399ff'/>
                     <h3 style={filterTitle}>Empresa:</h3>
