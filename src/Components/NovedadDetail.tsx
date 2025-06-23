@@ -77,6 +77,8 @@ export default function NovedadDetail () {
             date_start: '',
             causa: ''
         })
+        setConcepto('')
+        setFile(null)
     },[categoria])
 
     const novTr: React.CSSProperties = {
@@ -231,6 +233,7 @@ export default function NovedadDetail () {
             const res = await postArchivo(novedad.novedad.numero,novedad.novedad.novedad_id,concepto,file)
             if(res) {
                 alert("Archivo guardado!")
+                window.location.reload()
             } else alert("Error al subir")
         }
         else alert("Ingrese un concepto y suba un archivo.")
@@ -437,6 +440,9 @@ export default function NovedadDetail () {
                     <h3 id="titulo" style={textStyle}>CUIL: {novedad?.legajo.cuil}</h3>
                     <h3 id="titulo" style={textStyle}>Sector: {novedad?.legajo.sector}</h3>
                     <h3 id="titulo" style={textStyle}>Direccion: {novedad?.legajo.direccion ? novedad?.legajo.direccion : "NaN"}</h3>
+                    <h3 id="titulo" style={textStyle}>Email: {novedad?.novedad.email ? novedad?.novedad.email : "NaN"}</h3>
+                    <h3 id="titulo" style={textStyle}>Telefono: {novedad?.novedad.telefono ? novedad?.novedad.telefono : "NaN"}</h3>
+
                 </div>
                 <div style={sectionStyle}>
                     <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Causa de la Novedad</h2>

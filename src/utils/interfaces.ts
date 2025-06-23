@@ -14,7 +14,9 @@ export interface INovedad {
     fecha: string,
     numero: string,
     categoria: string,
-    cerrado: boolean
+    cerrado: boolean,
+    email: string,
+    telefono: string
 }
 
 export interface INovFilter {
@@ -48,7 +50,9 @@ export interface INovDto {
     solicitante: string,
     empresa_id?: number,
     legajo: number,
-    categoria: string
+    categoria: string,
+    email: string,
+    telefono: string
 }
 
 export interface ILegajo {

@@ -21,9 +21,9 @@ export default function Novedades () {
     const [categoriasSele, setCategoriesSele] = useState<string[]>([])
     const [usuarios, setUsuarios] = useState<IUsuario[]>([])
 
-    session(true)
 
     useEffect(() => {
+        session(true)
         getEmpresas().then(em=>setEmpresasSele(em))
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
         getUsuarios().then(us=>setUsuarios(us))

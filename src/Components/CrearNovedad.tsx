@@ -18,6 +18,8 @@ export default function CrearNovedad () {
     const [descripcion, setDescripcion] = useState('')
     const [legajo, setLegajo] = useState(0)
     const [load, setLoading] = useState(false)
+    const [email, setEmail] = useState('')
+    const [telefono, setTelefono] = useState('')
 
     session(true)
 
@@ -41,7 +43,8 @@ export default function CrearNovedad () {
 
     const createNovedad = () => {
         const username = localStorage.getItem('username')
-        if(categoria.length > 0 && empresa && descripcion.length > 50 && username && legajo){
+        if(categoria.length > 0 && empresa && descripcion.length > 50 && username &&
+             legajo && email.length > 0 && telefono.length > 0){
             if(confirm("Quieres registrar una nueva novedad")){
                 setLoading(true)
                 const data: INovDto = {
@@ -49,20 +52,24 @@ export default function CrearNovedad () {
                     causa: descripcion,
                     empresa_id: empresa,
                     legajo: legajo,
-                    categoria: categoria
+                    categoria: categoria,
+                    email: email,
+                    telefono: telefono
                 }
                 setTimeout(() => {
                     setLoading(false)
                     postNovedad(data)
                 }, 1500);
+                setDescripcion('')
+                setEmpresa(0)
+                setLegajo(0)
+                setCategoria('')
+                setLegajosS('')
+                setEmail('')
+                setTelefono('')
             }
         }
-        else alert("Asegurese de haber seleccionado una empresa, un legajo y categoria. Ademas que la descripcion puede ser corta.")
-        setDescripcion('')
-        setEmpresa(0)
-        setLegajo(0)
-        setCategoria('')
-        setLegajosS('')
+        else alert("Asegurese de haber seleccionado una empresa, un legajo y categoria. Ademas que la descripcion puede ser corta y faltan datos de contacto.")
     }   
 
 
@@ -98,6 +105,22 @@ export default function CrearNovedad () {
                     </select>
             </div>
 
+            <div>
+                <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                    Email del Trabajador
+                </h3>
+                <div style={{marginBottom: "10px"}}>
+                    <input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
+                </div>
+            </div>
+            <div>
+                <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                    Telefono del Trabajador
+                </h3>
+                <div style={{marginBottom: "10px"}}>
+                    <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
+                </div>
+            </div>
             <div>
                 <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
                     Legajos

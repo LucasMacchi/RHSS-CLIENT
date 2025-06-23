@@ -17,6 +17,8 @@ export default function CrearNovedadS () {
     const [descripcion, setDescripcion] = useState('')
     const [legajo, setLegajo] = useState(0)
     const [load, setLoading] = useState(false)
+    const [email, setEmail] = useState('')
+    const [telefono, setTelefono] = useState('')
 
     session(false)
 
@@ -39,26 +41,32 @@ export default function CrearNovedadS () {
 
     const createNovedad = () => {
         const username = localStorage.getItem('username')
-        if(categoria.length > 0 && descripcion.length > 50 && username && legajo){
+        if(categoria.length > 0 && descripcion.length > 50 && username && legajo && 
+            legajo && email.length > 0 && telefono.length > 0
+        ){
             if(confirm("Quieres registrar una nueva novedad")){
                 setLoading(true)
                 const data: INovDto = {
                     solicitante: username,
                     causa: descripcion,
                     legajo: legajo,
-                    categoria: categoria
+                    categoria: categoria,
+                    email: email,
+                    telefono: telefono
                 }
                 setTimeout(() => {
                     setLoading(false)
                     postNovedad(data)
                 }, 1500);
+                setDescripcion('')
+                setLegajo(0)
+                setCategoria('')
+                setLegajosS('')
+                setEmail('')
+                setTelefono('')
             }
         }
-        else alert("Asegurese de haber seleccionado una empresa, un legajo y categoria. Ademas que la descripcion puede ser corta.")
-        setDescripcion('')
-        setLegajo(0)
-        setCategoria('')
-        setLegajosS('')
+        else alert("Asegurese de haber seleccionado una empresa, un legajo y categoria. Ademas que la descripcion puede ser corta y faltan datos de contacto.")
     }
     const logoutBtn = async () => {
         if(confirm('Quieres cerrar sesion?')){
@@ -90,6 +98,22 @@ export default function CrearNovedadS () {
                             <option key={c} value={c}>{c}</option>
                         ))}
                     </select>
+            </div>
+            <div>
+                <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                    Email del Trabajador
+                </h3>
+                <div style={{marginBottom: "10px"}}>
+                    <input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
+                </div>
+            </div>
+            <div>
+                <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                    Telefono del Trabajador
+                </h3>
+                <div style={{marginBottom: "10px"}}>
+                    <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
+                </div>
             </div>
             <div>
                 <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
