@@ -13,7 +13,8 @@ export interface INovedad {
     usuario_id: number,
     fecha: string,
     numero: string,
-    categoria: string
+    categoria: string,
+    cerrado: boolean
 }
 
 export interface INovFilter {
@@ -54,7 +55,9 @@ export interface ILegajo {
     legajo: number, 
     fullname: string,
     cuil: number,
-    sector: string
+    sector: string,
+    fecha_egreso: string,
+    direccion: string
 }
 
 export interface IAusente {
@@ -99,13 +102,21 @@ export interface ILicencia {
     novedad_id: number
 }
 
+export interface IArchivo {
+    ruta: string,
+    concepto: string,
+    novedad: number,
+    fecha: string
+}
+
 export interface INovLeg {
     legajo: ILegajo,
     novedad: INovedad,
     ausentes: IAusente[],
     sanciones: ISancion[],
     personal: IPersonal[],
-    licencias: ILicencia[]
+    licencias: ILicencia[],
+    archivos: IArchivo[]
 
 }
 

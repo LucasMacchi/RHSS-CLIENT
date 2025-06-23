@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import Header from "./Header"
 import session from "../utils/session"
 import type {ILegajo, INovDto } from "../utils/interfaces"
-import { getCategoriasNov, getLegajos } from "../utils/getData"
+import { getAllLegajos, getCategoriasNov } from "../utils/getData"
 import postNovedad from "../utils/postNovedad"
 import logoutFn from "../utils/logoutFn"
 
@@ -22,7 +22,7 @@ export default function CrearNovedadS () {
 
     useEffect(()=>{
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
-        getLegajos().then(lg=>setLegajos(lg))
+        getAllLegajos().then(lg=>setLegajos(lg))
     },[])
 
     useEffect(() => {

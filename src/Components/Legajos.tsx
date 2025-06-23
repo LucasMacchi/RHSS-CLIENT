@@ -10,7 +10,7 @@ export default function Legajos () {
     const [legajosF, setLegajosF] = useState<ILegajo[]>([])
     const [legajosS, setLegajosS] = useState<string>('')
     const [novedades, setNovedades] = useState<INovedad[] | null>()
-    const [legajoN, setLegajoN] = useState<ILegajo>({legajo: 0, cuil: 0, fullname: '', sector: ''})
+    const [legajoN, setLegajoN] = useState<ILegajo>({legajo: 0, cuil: 0, fullname: '', sector: '', direccion: '', fecha_egreso: ''})
     session(true)
 
 
@@ -49,6 +49,7 @@ export default function Legajos () {
                     <h4 style={{fontWeight: "bold", color: "#3399ff"}}>Nombre: {legajoN.fullname}</h4>
                     <h4 style={{fontWeight: "bold", color: "#3399ff"}}>Cuil: {legajoN.cuil}</h4>
                     <h4 style={{fontWeight: "bold", color: "#3399ff"}}>Sector: {legajoN.sector}</h4>
+                    <h4 style={{fontWeight: "bold", color: "#3399ff"}}>Direccion: {legajoN.direccion}</h4>
                 </div>
                 <h1 style={{fontWeight: "bold", color: "#3399ff"}}>Novedades del Legajo</h1>
                 <div style={{height: "400px", overflow: "scroll"}}>
@@ -60,6 +61,7 @@ export default function Legajos () {
                                 <th style={novTr}>Categoria</th>
                                 <th style={novTr}>Fecha</th>
                                 <th style={novTr}>Solicitante</th>
+                                <th style={novTr}>Estado</th>
                             </tr>
                             {novedades.map((n) => (
                             <tr onClick={() => window.location.href = '/Novedad/'+n.novedad_id}>
@@ -67,6 +69,7 @@ export default function Legajos () {
                                 <th style={novTr}>{n.categoria}</th>
                                 <th style={novTr}>{n.fecha}</th>
                                 <th style={novTr}>{n.solicitante}</th>
+                                <th style={novTr}>{n.cerrado ? "Cerrado" : "Abierto"}</th>
                             </tr>
                             ))}
 

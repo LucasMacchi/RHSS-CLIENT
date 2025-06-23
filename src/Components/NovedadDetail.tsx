@@ -6,7 +6,7 @@ import getUniqNovedad from "../utils/getUniqNovedad";
 import { getCategoriasNov, getEmpresas } from "../utils/getData";
 import getNovedadesLegajo from "../utils/getNovedadesLegajo";
 import session from "../utils/session";
-import { createAusenteFn, createLicenciaFn, createPersonalFn, createSancionFn } from "../utils/createActions";
+import { changeState, createAusenteFn, createLicenciaFn, createPersonalFn, createSancionFn, getArchivo, postArchivo } from "../utils/createActions";
 
 
 export default function NovedadDetail () {
@@ -18,6 +18,8 @@ export default function NovedadDetail () {
     const [categoriasSele, setCategoriesSele] = useState<string[]>([])
     const [categoria, setCategoria] = useState(0)
     const [dataCheck, setDataCherck] = useState(false)
+    const [concepto, setConcepto] = useState('')
+    const [file, setFile] = useState<File | null>(null)
     const [data, setData] = useState({
         date_start: '',
         date_end: '',
@@ -224,6 +226,33 @@ export default function NovedadDetail () {
 
     }
 
+    const createArchivo = async () => {
+        if(file && concepto && novedad?.novedad) {
+            const res = await postArchivo(novedad.novedad.numero,novedad.novedad.novedad_id,concepto,file)
+            if(res) {
+                alert("Archivo guardado!")
+            } else alert("Error al subir")
+        }
+        else alert("Ingrese un concepto y suba un archivo.")
+    }
+
+    const downloadFile = async (url: string) => {
+        if(confirm("Quieres descargar el archivo?")){
+            await getArchivo(url)
+        }
+    }
+    
+    const changeStateNov = async () => {
+        if(novedad && novedad.novedad && confirm(novedad?.novedad.cerrado ? "Quieres reabrir la novedad" : "Quieres cerrar la novedad?")) {
+            const res = await changeState(novedad.novedad.novedad_id)
+            if(res) {
+                alert("Cambios aplicados.")
+                window.location.reload()
+            }
+            else alert("No se pudo aplicar los cambios.")
+        }
+    }
+
     const displayForms = () => {
         switch(categoria) {
             case 1:
@@ -334,6 +363,32 @@ export default function NovedadDetail () {
                         </div>
                     </div>
                 )
+            case 25:
+                return(
+                    <div style={sectionActionStyle}>
+                        <h3 id="subtitulo" style={textStyle}>
+                            Concepto
+                        </h3>
+                        <input style={{width: "300px"}} type="text" value={concepto} onChange={e => setConcepto(e.target.value)}/>
+                        <h3 id="subtitulo" style={textStyle}>
+                            Archivo
+                        </h3>
+                        <input style={{width: "300px", marginBottom: "30px"}} type="file" onChange={e => e.target.files && setFile(e.target.files[0])}/>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createArchivo()}>Subir Archivo</button>
+                        </div>
+                    </div>
+                )
+            case 26:
+                return (
+                    <div style={{...sectionActionStyle, marginTop: "30px"}}>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => changeStateNov()}>{novedad?.novedad.cerrado ? "REABRIR NOVEDAD" : "CERRAR NOVEDAD"}</button>
+                        </div>
+                    </div>
+                )
             default:
                 return(
                 <div style={sectionActionStyle}>
@@ -364,7 +419,7 @@ export default function NovedadDetail () {
     return(
         <div>
             <Header/>
-            <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Novedad - {novedad?.novedad.numero}</h1>
+            <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Novedad - {novedad?.novedad.numero} - {novedad?.novedad.cerrado ? "Cerrado" : "Abierto"}</h1>
             <hr color='#3399ff'/>
             <div style={{display: "flex", justifyContent: "space-between"}}>
             <div style={{display: "flex", flexDirection: "column",width: "400px"}}>
@@ -381,6 +436,7 @@ export default function NovedadDetail () {
                     <h3 id="titulo" style={textStyle}>Nombre completo: {novedad?.legajo.fullname}</h3>
                     <h3 id="titulo" style={textStyle}>CUIL: {novedad?.legajo.cuil}</h3>
                     <h3 id="titulo" style={textStyle}>Sector: {novedad?.legajo.sector}</h3>
+                    <h3 id="titulo" style={textStyle}>Direccion: {novedad?.legajo.direccion ? novedad?.legajo.direccion : "NaN"}</h3>
                 </div>
                 <div style={sectionStyle}>
                     <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Causa de la Novedad</h2>
@@ -401,6 +457,8 @@ export default function NovedadDetail () {
                     {categoriasSele.map((c,i) => (
                         <option key={c} value={(i+1)}>{c}</option>
                     ))}
+                    <option value={25}>SUBIR ARCHIVO</option>
+                    <option value={26}>{novedad?.novedad.cerrado ? "REABRIR NOVEDAD" : "CERRAR NOVEDAD"}</option>
                 </select>
                 {displayForms()}
                 {displayAction()}
@@ -444,7 +502,7 @@ export default function NovedadDetail () {
                             <tr>
                                 <th style={novTr}>Tipo</th>
                                 <th style={novTr}>Fecha</th>
-                                <th style={novTr}>Categoria</th>
+                                <th style={novTr}>Categoria/Concepto</th>
                             </tr>
                             {novedad?.ausentes.map((n) => (
                             <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, "Ausente", n.fecha_ausentada)}>
@@ -474,7 +532,13 @@ export default function NovedadDetail () {
                                 <th style={novTr}>{n.tipo}</th>
                             </tr>
                             ))}
-
+                            {novedad?.archivos.map((a) => (
+                            <tr onClick={() => downloadFile(a.ruta)}>
+                                <th style={novTr}>Archivo</th>
+                                <th style={novTr}>{a.fecha}</th>
+                                <th style={novTr}>{a.concepto}</th>
+                            </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>

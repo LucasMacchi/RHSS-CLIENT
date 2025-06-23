@@ -91,7 +91,7 @@ export default function MisNovedades () {
                 {novedades.map((n) => (
                     <div key={n.numero} style={{
                         width: "450px",
-                        backgroundColor: "#6495ed",
+                        backgroundColor: n.cerrado ? "crimson" : "#6495ed",
                         display: "flex",
                         justifyContent: "space-around",
                         margin: "20px",

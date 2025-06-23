@@ -117,3 +117,46 @@ export async function deactivateUser(userId:number) {
         console.log(error)
     }
 }
+
+export async function postArchivo (numero: string, novedad: number, 
+    concepto: string, archivo: File): Promise<boolean> {
+    try {
+        await axios.post(SERVER+"/data/upload",{
+            file: archivo,
+            concepto: concepto,
+            carpeta: numero,
+            novedad: novedad
+        },
+    {withCredentials: true, headers: {'Content-Type': 'multipart/form-data'}})
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export async function getArchivo (urlFile: string) {
+    try {
+        const file: Blob = (await axios.post(SERVER+"/data/download", {url:urlFile}, 
+            {withCredentials: true,responseType: 'blob',headers: {'Content-Type': 'multipart/form-data'}})).data
+        const filename = urlFile.split('/').pop()
+        const url = window.URL.createObjectURL(file)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = filename ? filename : "NaN"
+        a.click()
+    } catch (error) {
+        console.log(error)
+        alert("No se puedo descargar el archivo")
+    }
+}
+
+export async function changeState (id: number): Promise<boolean> {
+    try {
+        await axios.patch(SERVER+"/novedad/state/"+id,{},{withCredentials: true})
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
