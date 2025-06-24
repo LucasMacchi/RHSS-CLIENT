@@ -17,4 +17,5 @@ export default async function (adm:boolean) {
         if(res.username.length === 0) window.location.href = "/login"
         if(res.administrativo) window.location.href = "/"
     }
+
 }

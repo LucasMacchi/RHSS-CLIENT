@@ -77,11 +77,12 @@ export default function CrearNovedadS () {
     return(
         <div style={{textAlign: "center"}}>
             <Header/>
-            <div>
+
+            <div >
                 <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "200px"}} disabled={load} 
                 onClick={() => logoutBtn()}>Cerrar Sesion</button>
             </div>
-            <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+            <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff"}} >
                 Crear Novedad
             </h1>
             <hr color='#3399ff'/>

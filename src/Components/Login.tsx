@@ -6,7 +6,6 @@ export default function Login () {
     const [username, setUsername] = useState('')
     const [load, setLoading] = useState(false)
 
-
     const loginAction = async () => {
         setLoading(true)
         const res = await loginFn(username)
@@ -17,7 +16,7 @@ export default function Login () {
         }
         else{
             setLoading(false)
-            window.location.href = "/Crear"
+            window.location.href = "/"
         }
         
     }
