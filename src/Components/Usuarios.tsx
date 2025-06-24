@@ -36,7 +36,7 @@ export default function Usuarios () {
         getUsuarios().then(us=>setUsuarios(us))
     },[])
 
-    session(false, true)
+    session(true)
 
     const novTr: React.CSSProperties = {
         border: "1px solid",

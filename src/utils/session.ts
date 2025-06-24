@@ -1,17 +1,20 @@
-import logoutFn from "./logoutFn";
-import sessionChecker from "./sessionChecker";
+import axios from "axios";
+import type { ISession } from "./interfaces";
+const SERVER = import.meta.env.VITE_SERVER;
 
-export default function (administrativo: boolean, admin?: boolean) {
-    sessionChecker()
-    .then(d => {
-        if(d.username.length > 0) {
-            if(admin && !d.administrativo) window.location.href = '/login'
-            else if(administrativo && !d.administrativo) window.location.href = '/login'
-            localStorage.setItem('username', d.username)
+export default async function (adm:boolean) {
+    const res: ISession = (await axios.get(SERVER+"/usuario/session",{withCredentials: true})).data
+    if(res.admin) localStorage.setItem('admin',res.username )
+    if(adm) {
+        if(!res.administrativo && res.username.length > 0){
+            window.location.href = "/Crear"
         }
-        else{
-            logoutFn()
-            window.location.href = '/login'
+        else if(!res.administrativo){
+            window.location.href = "/login"
         }
-    })
+    }
+    else {
+        if(res.username.length === 0) window.location.href = "/login"
+        if(res.administrativo) window.location.href = "/"
+    }
 }

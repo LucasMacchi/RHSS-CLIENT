@@ -1,20 +1,11 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import loginFn from "../utils/loginFn"
-import sessionChecker from "../utils/sessionChecker"
 import Header from "./Header"
 export default function Login () {
 
     const [username, setUsername] = useState('')
     const [load, setLoading] = useState(false)
 
-    useEffect(() => {
-        sessionChecker().then(d => {
-            if(d.username.length > 0) {
-                if(d.administrativo) window.location.href = '/'
-                else window.location.href = '/Crear'
-            }
-        })
-    },[])
 
     const loginAction = async () => {
         setLoading(true)
@@ -26,7 +17,7 @@ export default function Login () {
         }
         else{
             setLoading(false)
-            window.location.reload()
+            window.location.href = "/Crear"
         }
         
     }

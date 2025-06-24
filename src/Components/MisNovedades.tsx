@@ -20,10 +20,9 @@ export default function MisNovedades () {
     const [empresasSele, setEmpresasSele] = useState<IEmpresa[]>([])
     const [categoriasSele, setCategoriesSele] = useState<string[]>([])
     
-
-    session(true)
     
     useEffect(() => {
+        session(true)
         getEmpresas().then(em=>setEmpresasSele(em))
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
     },[])

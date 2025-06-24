@@ -20,9 +20,9 @@ export default function CrearNovedadS () {
     const [email, setEmail] = useState('')
     const [telefono, setTelefono] = useState('')
 
-    session(false)
 
     useEffect(()=>{
+        session(false)
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
         getAllLegajos().then(lg=>setLegajos(lg))
     },[])
@@ -69,10 +69,8 @@ export default function CrearNovedadS () {
         else alert("Asegurese de haber seleccionado una empresa, un legajo y categoria. Ademas que la descripcion puede ser corta y faltan datos de contacto.")
     }
     const logoutBtn = async () => {
-        if(confirm('Quieres cerrar sesion?')){
-            await logoutFn()
-            window.location.reload()
-        }
+        await logoutFn()
+        window.location.href = "/login"
     } 
 
 

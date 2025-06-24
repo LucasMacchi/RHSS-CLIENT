@@ -1,25 +1,15 @@
 import { useState, useEffect } from "react"
-import sessionChecker from "../utils/sessionChecker"
 import type { INovedad } from "../utils/interfaces"
 import todayNovedades from "../utils/todayNovedades"
 import Header from "./Header"
-import logoutFn from "../utils/logoutFn"
+import session from "../utils/session"
 
 export default function NovedadesPage () {
 
     const [novedades, setNovedades] = useState<INovedad[]>([])
 
     useEffect(() => {
-        sessionChecker()
-        .then(d => {
-            if(d.username.length > 0) {
-                if(!d.administrativo) window.location.href = '/login'
-            }
-            else{
-                logoutFn()
-                window.location.href = '/login'
-            }
-        })
+        session(true)
         todayNovedades().then(novs => setNovedades(novs))
     },[])
 

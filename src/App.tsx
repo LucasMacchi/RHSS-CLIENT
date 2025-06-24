@@ -9,6 +9,7 @@ import Legajos from "./Components/Legajos"
 import NovedadDetail from "./Components/NovedadDetail"
 import Usuarios from "./Components/Usuarios"
 function App() {
+
   return (
     <div>
       <BrowserRouter>

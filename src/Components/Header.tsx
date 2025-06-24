@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import logo from "../assets/logo_big.webp";
 import { Link, useLocation } from "react-router";
 import logoutFn from "../utils/logoutFn";
-import sessionChecker from "../utils/sessionChecker";
 
 export default function Header () {
 
@@ -17,7 +16,7 @@ export default function Header () {
         else {
             setNavbar(false)
         }
-        sessionChecker().then(s => setAdmin(s.admin))
+        if(localStorage.getItem('admin')) setAdmin(true)
     },[location])
 
     const linkStyle: React.CSSProperties = { height: "auto", border: "1px solid", borderColor: "black",
@@ -25,10 +24,7 @@ export default function Header () {
         fontSize: "x-large"}
 
     const logout = async () => {
-        if(confirm('Quieres cerrar la sesion?')) {
-            await logoutFn()
-            window.location.reload()
-        }
+        await logoutFn()
     }
 
     const navbarDisplay = () => {
@@ -52,7 +48,7 @@ export default function Header () {
                         {admin && <Link style={linkStyle} to={'/Usuarios'}>Usuarios</Link>}
                     </div>
                     <div style={{padding: "10px"}}>
-                        <a href="" style={{...linkStyle, backgroundColor: "red"}} onClick={() => logout()}>Cerrar Sesion</a>
+                        <a href="/login" style={{...linkStyle, backgroundColor: "red"}} onClick={() => logout()}>Cerrar Sesion</a>
                     </div>
                 </div>
                 </div>

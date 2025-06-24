@@ -1,9 +1,9 @@
-import { useState } from "react";
-import session from "../utils/session";
+import { useEffect, useState } from "react";
 import Header from "./Header";
 import type { ILegajo, INovedad } from "../utils/interfaces";
 import { getLegajos } from "../utils/getData";
 import getNovedadesLegajo from "../utils/getNovedadesLegajo";
+import session from "../utils/session";
 
 export default function Legajos () {
 
@@ -11,8 +11,10 @@ export default function Legajos () {
     const [legajosS, setLegajosS] = useState<string>('')
     const [novedades, setNovedades] = useState<INovedad[] | null>()
     const [legajoN, setLegajoN] = useState<ILegajo>({legajo: 0, cuil: 0, fullname: '', sector: '', direccion: '', fecha_egreso: ''})
-    session(true)
 
+    useEffect(() => {
+        session(true)
+    },[])
 
     const fetchLegajos = async () => {
         let arr = await getLegajos(legajosS)
@@ -25,6 +27,7 @@ export default function Legajos () {
     const legajoTr: React.CSSProperties = {
         width: "25%"
     }
+
 
     const getNovsLegajo = async (legajo: ILegajo) => {
         setNovedades(null)

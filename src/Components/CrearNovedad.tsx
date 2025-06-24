@@ -21,9 +21,8 @@ export default function CrearNovedad () {
     const [email, setEmail] = useState('')
     const [telefono, setTelefono] = useState('')
 
-    session(true)
-
     useEffect(()=>{
+        session(true)
         getEmpresas().then(em=>setEmpresasSele(em))
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
         getAllLegajos().then(lg=>setLegajos(lg))

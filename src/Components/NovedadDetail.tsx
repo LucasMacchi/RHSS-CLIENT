@@ -55,9 +55,9 @@ export default function NovedadDetail () {
         marginLeft: "10px",
         height: "100%"
     }
-    session(true)
-    
+
     useEffect(() => {
+        session(true)
         if(params.id) {
             getEmpresas().then(em=>setEmpresasSele(em))
             getUniqNovedad(parseInt(params.id)).then(n => n ? setNovedad(n) : '')
