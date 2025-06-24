@@ -7,10 +7,14 @@ import session from "../utils/session"
 export default function NovedadesPage () {
 
     const [novedades, setNovedades] = useState<INovedad[]>([])
+    const [load, setLoad] = useState(true)
 
     useEffect(() => {
         session(true)
-        todayNovedades().then(novs => setNovedades(novs))
+        setTimeout(() => {
+            setLoad(false)
+            todayNovedades().then(novs => setNovedades(novs))
+        }, 2500);
     },[])
 
     const novedadesDisplay = () => {
@@ -46,7 +50,7 @@ export default function NovedadesPage () {
     }
 
     return (
-        <>
+        <div style={{display: load ? 'none' : 'block'}}>
         <Header/>
         <div style={{textAlign: "center"}}>
             <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff"}}>Novedades del Dia</h1>
@@ -54,7 +58,7 @@ export default function NovedadesPage () {
             {novedadesDisplay()}
             <hr color='#3399ff'/> 
         </div>
-        </>
+        </div>
 
     )
 }
