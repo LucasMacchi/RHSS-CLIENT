@@ -3,8 +3,10 @@ import type { ISession } from "./interfaces";
 const SERVER = import.meta.env.VITE_SERVER;
 
 export default async function (adm:boolean) {
+    try {
     const res: ISession = (await axios.get(SERVER+"/usuario/session",{withCredentials: true})).data
     setTimeout(() => {
+        console.log(res)
         localStorage.setItem('username', res.username)
         if(res.admin) localStorage.setItem('admin',res.username)
         if(adm) {
@@ -20,5 +22,8 @@ export default async function (adm:boolean) {
             if(res.administrativo) window.location.href = "/"
         }
     }, 1000);
+    } catch (error) {
+        window.location.href = "/login"
+    }
 
 }
