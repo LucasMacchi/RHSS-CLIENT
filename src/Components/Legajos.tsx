@@ -10,6 +10,7 @@ export default function Legajos () {
     const [legajosF, setLegajosF] = useState<ILegajo[]>([])
     const [legajosS, setLegajosS] = useState<string>('')
     const [novedades, setNovedades] = useState<INovedad[] | null>()
+    const [egressed, setEgress] = useState(false)
     const [legajoN, setLegajoN] = useState<ILegajo>({legajo: 0, cuil: 0, fullname: '', sector: '', direccion: '', fecha_egreso: ''})
 
     useEffect(() => {
@@ -17,7 +18,7 @@ export default function Legajos () {
     },[])
 
     const fetchLegajos = async () => {
-        let arr = await getLegajos(legajosS)
+        let arr = await getLegajos(legajosS, egressed)
         if(arr.length > 0) {
             if(legajosS.length > 3) arr = arr.filter((l) => l.fullname.toLocaleLowerCase().includes(legajosS.toLocaleLowerCase()))
         }
@@ -95,6 +96,10 @@ export default function Legajos () {
             <div style={{marginBottom: "10px"}}>
                 <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
                     Buscar por nombre
+                </h4>
+                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                    Traer legajos desactivados
+                    <input type="checkbox" checked={egressed} onChange={e => setEgress(e.target.checked)}/>
                 </h4>
                 <input type="text" value={legajosS} onChange={e => setLegajosS(e.target.value)}/>
             </div>

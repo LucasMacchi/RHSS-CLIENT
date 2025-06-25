@@ -5,19 +5,20 @@ const SERVER = import.meta.env.VITE_SERVER;
 export default async function (adm:boolean) {
     const res: ISession = (await axios.get(SERVER+"/usuario/session",{withCredentials: true})).data
     setTimeout(() => {
-    if(res.admin) localStorage.setItem('admin',res.username )
-    if(adm) {
-        if(!res.administrativo && res.username.length > 0){
-            window.location.href = "/Crear"
+        localStorage.setItem('username', res.username)
+        if(res.admin) localStorage.setItem('admin',res.username)
+        if(adm) {
+            if(!res.administrativo && res.username.length > 0){
+                window.location.href = "/Crear"
+            }
+            else if(!res.administrativo){
+                window.location.href = "/login"
+            }
         }
-        else if(!res.administrativo){
-            window.location.href = "/login"
+        else {
+            if(res.username.length === 0) window.location.href = "/login"
+            if(res.administrativo) window.location.href = "/"
         }
-    }
-    else {
-        if(res.username.length === 0) window.location.href = "/login"
-        if(res.administrativo) window.location.href = "/"
-    }
     }, 1500);
 
 }

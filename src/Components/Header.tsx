@@ -56,7 +56,7 @@ export default function Header () {
         }
         else{
             return(
-                <img src={logo} alt="Logo" style={{maxWidth: "500px", width: "100%"}}/>
+                <img src={logo} alt="Logo" style={{maxWidth: "300px", width: "100%"}}/>
             )
         }
     }

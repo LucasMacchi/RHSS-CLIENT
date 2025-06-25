@@ -140,6 +140,9 @@ export default function CrearNovedadS () {
                 <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
                     Descripcion
                 </h3>
+                <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                    Minimo de 50 caracteres - Actuales {descripcion.length}
+                </h5>
                 <textarea value={descripcion} onChange={e => setDescripcion(e.target.value)}
                 style={{width: "350px", maxWidth: "300px", height: "200px", resize: "none"}}/>
             </div>

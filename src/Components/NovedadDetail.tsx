@@ -271,6 +271,9 @@ export default function NovedadDetail () {
                             <h3 id="subtitulo" style={textStyle}>
                                 Descripcion
                             </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {data.causa.length}
+                            </h5>
                             <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
                             style={textAreaStyle}/>
                         </div>
@@ -287,6 +290,9 @@ export default function NovedadDetail () {
                             <h3 id="subtitulo" style={textStyle}>
                                 Descripcion
                             </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {data.causa.length}
+                            </h5>
                             <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
                             style={textAreaStyle}/>
                         </div>
@@ -312,6 +318,9 @@ export default function NovedadDetail () {
                             <h3 id="subtitulo" style={textStyle}>
                                 Descripcion
                             </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {data.causa.length}
+                            </h5>
                             <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
                             style={textAreaStyle}/>
                         </div>
@@ -335,6 +344,9 @@ export default function NovedadDetail () {
                             <h3 id="subtitulo" style={textStyle}>
                                 Descripcion
                             </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {data.causa.length}
+                            </h5>
                             <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
                             style={textAreaStyle}/>
                         </div>
@@ -357,6 +369,9 @@ export default function NovedadDetail () {
                             <h3 id="subtitulo" style={textStyle}>
                                 Descripcion
                             </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {data.causa.length}
+                            </h5>
                             <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
                             style={textAreaStyle}/>
                         </div>
