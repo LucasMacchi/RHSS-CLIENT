@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react"
 import Header from "./Header"
 import session from "../utils/session"
-import type {ILegajo, INovDto } from "../utils/interfaces"
+import type {ILegajo, INovDto, INovedad, INovFilter } from "../utils/interfaces"
 import { getAllLegajos, getCategoriasNov } from "../utils/getData"
 import postNovedad from "../utils/postNovedad"
 import logoutFn from "../utils/logoutFn"
+import getNovedadesSup from "../utils/getNovedadesSup"
 
 
 export default function CrearNovedadS () {
     
     const [categoria, setCategoria] = useState('')
     const [categoriasSele, setCategoriesSele] = useState<string[]>([])
+    const [novedades, setNovedades] = useState<INovedad[]>([])
     const [legajos, setLegajos] = useState<ILegajo[]>([])
     const [legajosF, setLegajosF] = useState<ILegajo[]>([])
     const [legajosS, setLegajosS] = useState<string>('')
@@ -19,6 +21,9 @@ export default function CrearNovedadS () {
     const [load, setLoading] = useState(false)
     const [email, setEmail] = useState('')
     const [telefono, setTelefono] = useState('')
+    const [show, setShow] = useState(false)
+    const [dateStart, setDateStart] = useState('')
+    const [dateEnd, setDateEnd] = useState('')
 
 
     useEffect(()=>{
@@ -26,6 +31,15 @@ export default function CrearNovedadS () {
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
         getAllLegajos().then(lg=>setLegajos(lg))
     },[])
+
+    useEffect(() => {
+        setEmail('')
+        setTelefono('')
+        setDateEnd('')
+        setDateStart('')
+        setDescripcion('')
+        setLegajosS('')
+    },[show])
 
     useEffect(() => {
         let arr = legajos
@@ -37,6 +51,37 @@ export default function CrearNovedadS () {
 
     const filterSelect: React.CSSProperties = {
         fontSize: "large", width: "200px"
+    }
+    const filterTitle: React.CSSProperties = {
+        margin: "5px"
+    }
+    const filterDivStyle: React.CSSProperties = {
+        color: "#6495ed"
+    }
+
+    const searchNovedades = () => {
+        setNovedades([])
+        setLoading(true)
+        const username = localStorage.getItem("username")
+        if(dateEnd.length > 0 && dateStart.length > 0 && 
+            username && username.length > 0) {
+            const fitler: INovFilter = {
+                fecha_final: dateEnd,
+                fecha_inicio: dateStart,
+                categoria: categoria,
+                solicitante: username,
+                empresa_id: 0
+            }
+            setTimeout(async () => {
+                const novedadesR = await getNovedadesSup(fitler)
+                setNovedades(novedadesR)
+                setLoading(false)
+            }, 1500);
+        }
+        else {
+            setLoading(false)
+            alert("Seleccione fechas validas y una empresa. Si busca el numero de novedad tiene que tener 5 digitos como minimo.")
+        }
     }
 
     const createNovedad = () => {
@@ -71,85 +116,151 @@ export default function CrearNovedadS () {
     const logoutBtn = async () => {
         await logoutFn()
         window.location.href = "/login"
-    } 
+    }
+
+    const displayCreateNov = () => {
+        if(show){
+            return (
+                <div>
+                    <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff"}} >
+                        Buscar Novedad
+                    </h1>
+                    <hr color='#3399ff'/>
+                    <div>
+                    <div style={filterDivStyle}>
+                        <h3 style={filterTitle} >Categoria</h3>
+                        <select name="causa" id="causa-selecet" style={filterSelect}
+                        onChange={e=>setCategoria(e.target.value)} value={categoria}>
+                            <option value={''}>---</option>
+                            {categoriasSele.map((c) => (
+                                <option key={c} value={c}>{c}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div style={filterDivStyle}>
+                        <h3 style={filterTitle} >Fecha inicio</h3>
+                        <input type="date" value={dateStart} onChange={e => setDateStart(e.target.value)} />
+                    </div>
+                    <div style={filterDivStyle}>
+                        <h3 style={filterTitle} >Fecha Final</h3>
+                        <input type="date" value={dateEnd} onChange={e => setDateEnd(e.target.value)} />
+                    </div>
+                    <h5 style={{color: "#3399ff", margin: "5px"}} >Para actualizar las novedades debes volver a buscar.</h5>
+                    <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "large", width: "120px"}} disabled={load} 
+                    onClick={()=>searchNovedades()}>{load ? "Buscando...." : "Buscar"}</button>
+                    </div>
+                    <div>
+                    <div style={{display: "flex", alignItems: "center", flexDirection: "column"}}>
+                    {novedades.map((n) => (
+                    <div key={n.numero} style={{
+                        width: "450px",
+                        backgroundColor: n.cerrado ? "crimson" : "#6495ed",
+                        display: "flex",
+                        justifyContent: "space-around",
+                        margin: "20px",
+                        borderRadius: "3px",
+                        color: "white",
+                        cursor: "pointer"}}
+                        >
+                        <h3>{n.numero}</h3>
+                        <h3>{n.fecha}</h3>
+                        <h3>{n.categoria}</h3>
+                    </div>
+                ))}
+            </div>
+                    </div>
+                </div>
+            )
+        }
+        else{
+            return(
+                <div>
+                    <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff"}} >
+                        Crear Novedad
+                    </h1>
+                    <hr color='#3399ff'/>
+                    <div>
+                        <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                            Categoria
+                        </h3>
+                            <select name="causa" id="causa-selecet" style={filterSelect}
+                            onChange={e=>setCategoria(e.target.value)} value={categoria}>
+                                <option value={''}>---</option>
+                                {categoriasSele.map((c) => (
+                                    <option key={c} value={c}>{c}</option>
+                                ))}
+                            </select>
+                    </div>
+                    <div>
+                        <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                            Email del Trabajador
+                        </h3>
+                        <div style={{marginBottom: "10px"}}>
+                            <input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                            Telefono del Trabajador
+                        </h3>
+                        <div style={{marginBottom: "10px"}}>
+                            <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                            Legajos
+                        </h3>
+                        <div style={{marginBottom: "10px"}}>
+                            <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                Buscar por nombre
+                            </h4>
+                            <input type="text" value={legajosS} onChange={e => setLegajosS(e.target.value)}/>
+                        </div>
+                            <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                Legajos encontrados - {legajosF.length}
+                            </h4>
+                            <select name="causa" id="causa-selecet" style={filterSelect}
+                            onChange={e=>setLegajo(parseInt(e.target.value))} value={legajo}>
+                                <option value={0}>---</option>
+                                {legajosF.map((e) => (
+                                    <option key={e.legajo} value={e.legajo}>{e.legajo+'-'+e.fullname}</option>
+                                ))}
+                            </select>
+                    </div>
+
+                    <div>
+                        <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                            Descripcion
+                        </h3>
+                        <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                            Minimo de 50 caracteres - Actuales {descripcion.length}
+                        </h5>
+                        <textarea value={descripcion} onChange={e => setDescripcion(e.target.value)}
+                        style={{width: "350px", maxWidth: "300px", height: "200px", resize: "none"}}/>
+                    </div>
+                    <div>
+                        <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}} disabled={load} 
+                        onClick={() => createNovedad()}>{load ? "Registrando...." : "Registrar"}</button>
+                    </div>``
+                </div>
+            )
+        }
+    }
 
 
     return(
         <div style={{textAlign: "center"}}>
             <Header/>
-
-            <div >
+            <div>
                 <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "200px"}} disabled={load} 
                 onClick={() => logoutBtn()}>Cerrar Sesion</button>
             </div>
-            <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff"}} >
-                Crear Novedad
-            </h1>
-            <hr color='#3399ff'/>
-            <div>
-                <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                    Categoria
-                </h3>
-                    <select name="causa" id="causa-selecet" style={filterSelect}
-                    onChange={e=>setCategoria(e.target.value)} value={categoria}>
-                        <option value={''}>---</option>
-                        {categoriasSele.map((c) => (
-                            <option key={c} value={c}>{c}</option>
-                        ))}
-                    </select>
+            <div style={{marginTop: "10px"}}>
+                <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "large", width: "200px"}} disabled={load} 
+                onClick={() => setShow(show ? false : true)}>{show ? "Crear Novedad" : "Mostrar Novedades"}</button>
             </div>
-            <div>
-                <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                    Email del Trabajador
-                </h3>
-                <div style={{marginBottom: "10px"}}>
-                    <input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
-                </div>
-            </div>
-            <div>
-                <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                    Telefono del Trabajador
-                </h3>
-                <div style={{marginBottom: "10px"}}>
-                    <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
-                </div>
-            </div>
-            <div>
-                <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                    Legajos
-                </h3>
-                <div style={{marginBottom: "10px"}}>
-                    <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
-                        Buscar por nombre
-                    </h4>
-                    <input type="text" value={legajosS} onChange={e => setLegajosS(e.target.value)}/>
-                </div>
-                    <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
-                        Legajos encontrados - {legajosF.length}
-                    </h4>
-                    <select name="causa" id="causa-selecet" style={filterSelect}
-                    onChange={e=>setLegajo(parseInt(e.target.value))} value={legajo}>
-                        <option value={0}>---</option>
-                        {legajosF.map((e) => (
-                            <option key={e.legajo} value={e.legajo}>{e.legajo+'-'+e.fullname}</option>
-                        ))}
-                    </select>
-            </div>
-
-            <div>
-                <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                    Descripcion
-                </h3>
-                <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                    Minimo de 50 caracteres - Actuales {descripcion.length}
-                </h5>
-                <textarea value={descripcion} onChange={e => setDescripcion(e.target.value)}
-                style={{width: "350px", maxWidth: "300px", height: "200px", resize: "none"}}/>
-            </div>
-            <div>
-                <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}} disabled={load} 
-                onClick={() => createNovedad()}>{load ? "Registrando...." : "Registrar"}</button>
-            </div>
+            {displayCreateNov()}
         </div>
     )
 }

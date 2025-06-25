@@ -14,7 +14,7 @@ export default function NovedadesPage () {
         setTimeout(() => {
             setLoad(false)
             todayNovedades().then(novs => setNovedades(novs))
-        }, 2500);
+        }, 1500);
     },[])
 
     const novedadesDisplay = () => {

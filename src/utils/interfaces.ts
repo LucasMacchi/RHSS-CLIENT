@@ -24,7 +24,7 @@ export interface INovFilter {
     fecha_final:string,
     categoria: string,
     solicitante: string,
-    empresa_id: number
+    empresa_id?: number
 }
 
 export interface IEmpresa {
