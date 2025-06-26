@@ -23,7 +23,7 @@ export default function NovedadesPage () {
             <div style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
                 {novedades.map((n) => (
                     <div key={n.numero} style={{
-                        width: "450px",
+                        width: "500px",
                         backgroundColor: n.cerrado ? "crimson" : "#6495ed",
                         display: "flex",
                         justifyContent: "space-around",
