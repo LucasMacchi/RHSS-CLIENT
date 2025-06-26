@@ -91,7 +91,7 @@ export default function CrearNovedadS () {
         }
         else {
             setLoading(false)
-            alert("Seleccione fechas validas y una empresa. Si busca el numero de novedad tiene que tener 5 digitos como minimo.")
+            alert("Seleccione fechas validas. Si busca el numero de novedad tiene que tener 5 digitos como minimo.")
         }
     }
 
@@ -101,7 +101,7 @@ export default function CrearNovedadS () {
             telefono.length > 0 && jornada.length > 0 && servicio.length > 0 && fullname.length>0 && username) {
             if(confirm("Quieres informar una nueva alta de legajo?")){
                 setLoading(true)
-                const des = `Datos del trabajador:\n+Nombre Completo: ${fullname}\n+Direccion: ${direccion}\n+Fecha de Nacimiento: ${nacimiento}\n+CUIL: ${legajo}\n+Fecha de Ingreso: ${dateIngreso}\n+Jornada: ${jornada}\n+Lugar de Trabajo: ${servicio}\n+Email: ${email}\n+Telefono: ${telefono}`
+                const des = `Datos del Operario:\n+Apellido y Nombre: ${fullname}\n+Direccion: ${direccion}\n+Fecha de Nacimiento: ${nacimiento}\n+CUIL: ${legajo}\n+Fecha de Ingreso: ${dateIngreso}\n+Jornada: ${jornada}\n+Lugar de Trabajo: ${servicio}\n+Email: ${email}\n+Telefono: ${telefono}`
                 const data: INovDto = {
                     solicitante: username,
                     causa: des,
@@ -117,7 +117,7 @@ export default function CrearNovedadS () {
                 setCategoria('')
             }
         }
-        else alert("Faltan datos del Trabajador")
+        else alert("Faltan datos del Operario")
     }
 
     const createNovedad = () => {
@@ -147,7 +147,7 @@ export default function CrearNovedadS () {
                 setTelefono('')
             }
         }
-        else alert("Asegurese de haber seleccionado una empresa, un legajo y categoria. Ademas que la descripcion puede ser corta y faltan datos de contacto.")
+        else alert("Asegurese de haber seleccionado un legajo y categoria. Ademas que la descripcion puede ser corta y faltan datos de contacto.")
     }
     const logoutBtn = async () => {
         await logoutFn()
@@ -231,11 +231,11 @@ export default function CrearNovedadS () {
                     <div>
                         <div>
                             <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                                Datos del Trabajador
+                                Datos del Operario
                             </h3>
                             <div>
                                 <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                                    Nombre Completo
+                                    Apellido y Nombre
                                 </h4>
                                 <div style={{marginBottom: "10px"}}>
                                     <input type="text" value={fullname} onChange={e => setFullname(e.target.value)}/>
@@ -243,7 +243,7 @@ export default function CrearNovedadS () {
                             </div>
                             <div>
                                 <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                                    Email del Trabajador
+                                    Email del Operario
                                 </h4>
                                 <div style={{marginBottom: "10px"}}>
                                     <input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
@@ -251,7 +251,7 @@ export default function CrearNovedadS () {
                             </div>
                             <div>
                                 <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                                    Telefono del Trabajador
+                                    Telefono del Operario
                                 </h4>
                                 <div style={{marginBottom: "10px"}}>
                                     <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
@@ -303,7 +303,7 @@ export default function CrearNovedadS () {
                     <div>
                         <div>
                             <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                                Email del Trabajador
+                                Email del Operario
                             </h3>
                             <div style={{marginBottom: "10px"}}>
                                 <input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
@@ -311,7 +311,7 @@ export default function CrearNovedadS () {
                         </div>
                         <div>
                             <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                                Telefono del Trabajador
+                                Telefono del Operario
                             </h3>
                             <div style={{marginBottom: "10px"}}>
                                 <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
@@ -365,7 +365,7 @@ export default function CrearNovedadS () {
         <div style={{textAlign: "center"}}>
             <Header/>
             <div>
-                <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "200px"}} disabled={load} 
+                <button id="bg-btn" style={{color: "white", backgroundColor: "crimson", fontSize: "x-large", width: "200px"}} disabled={load} 
                 onClick={() => logoutBtn()}>Cerrar Sesion</button>
             </div>
             <div style={{marginTop: "10px"}}>

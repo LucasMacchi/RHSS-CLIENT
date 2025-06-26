@@ -47,7 +47,14 @@ export default function NovedadDetail () {
     const textStyle: React.CSSProperties = {
         fontWeight: "normal",
         color: "#3399ff",
-        margin: "5px"
+        margin: "5px",
+        textAlign: "left"
+    }
+    const textStyleData: React.CSSProperties = {
+        fontWeight: "bolder",
+        margin: "5px",
+        textAlign: "left"
+
     }
     const parrafoStyle: React.CSSProperties = {
         fontWeight: "normal",
@@ -55,7 +62,7 @@ export default function NovedadDetail () {
         overflowWrap: 'break-word'
     }
     const sectionStyle: React.CSSProperties = {
-        maxHeight: "350px",
+        maxHeight: "380px",
         display: "inline-block",
         marginLeft: "10px",
         height: "100%"
@@ -504,6 +511,7 @@ export default function NovedadDetail () {
             case 26:
                 return (
                     <div style={{...sectionActionStyle, marginTop: "30px"}}>
+                    <h4 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Haga click en el archivo que desee eliminar.</h4>
                     <table style={{width: "400px"}}>
                         <tbody>
                             <tr>
@@ -568,25 +576,67 @@ export default function NovedadDetail () {
                 <div style={sectionStyle}>
                     <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Datos de la Novedad</h2>
                     <hr color='#3399ff'/>
-                    <h3 id="titulo" style={textStyle}>Fecha de notificacion: {novedad?.novedad.fecha}</h3>
-                    <h3 id="titulo" style={textStyle}>Solicitante: {novedad?.novedad.solicitante}</h3>
-                    <h3 id="titulo" style={textStyle}>Empresa: {empresaGetter(novedad?.novedad.empresa_id)}</h3>
+                    <table >
+                        <tbody>
+                            <tr >
+                                <th><h3 style={textStyle}>Fecha de notificacion:</h3></th>
+                                <th><h3 style={textStyleData}>{novedad?.novedad.fecha}</h3></th>
+                            </tr>
+                            <tr >
+                                <th><h3 id="titulo" style={textStyle}>Solicitante:</h3></th>
+                                <th><h3 id="titulo" style={textStyleData}>{novedad?.novedad.solicitante}</h3></th>
+                            </tr>
+                            <tr >
+                                <th><h3 id="titulo" style={textStyle}>Empresa:</h3></th>
+                                <th><h3 id="titulo" style={textStyleData}>{empresaGetter(novedad?.novedad.empresa_id)}</h3></th>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div style={sectionStyle}>
                     <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Datos del Trabajador</h2>
                     <hr color='#3399ff'/>
-                    <h3 id="titulo" style={textStyle}>Nombre completo: {novedad?.legajo.fullname}</h3>
-                    <h3 id="titulo" style={textStyle}>CUIL: {novedad?.legajo.cuil}</h3>
-                    <h3 id="titulo" style={textStyle}>Sector: {novedad?.legajo.sector}</h3>
-                    <h3 id="titulo" style={textStyle}>Direccion: {novedad?.legajo.direccion ? novedad?.legajo.direccion : "NaN"}</h3>
-                    <h3 id="titulo" style={textStyle}>Email: {novedad?.novedad.email ? novedad?.novedad.email : "NaN"}</h3>
-                    <h3 id="titulo" style={textStyle}>Telefono: {novedad?.novedad.telefono ? novedad?.novedad.telefono : "NaN"}</h3>
+                    <table >
+                        <tbody>
+                            <tr >
+                                <th><h3 style={textStyle}>Nombre completo:</h3></th>
+                                <th><h3 style={textStyleData}>{novedad?.legajo.fullname}</h3></th>
+                            </tr>
+                            <tr >
+                                <th><h3 id="titulo" style={textStyle}>CUIL:</h3></th>
+                                <th><h3 id="titulo" style={textStyleData}>{novedad?.legajo.cuil}</h3></th>
+                            </tr>
+                            <tr >
+                                <th><h3 id="titulo" style={textStyle}>Sector:</h3></th>
+                                <th><h3 id="titulo" style={textStyleData}>{novedad?.legajo.sector}</h3></th>
+                            </tr>
+                            <tr >
+                                <th><h3 id="titulo" style={textStyle}>Direccion:</h3></th>
+                                <th><h3 id="titulo" style={textStyleData}>{novedad?.legajo.direccion ? novedad?.legajo.direccion : "NaN"}</h3></th>
+                            </tr>
+                            <tr >
+                                <th><h3 id="titulo" style={textStyle}>Email:</h3></th>
+                                <th><h3 id="titulo" style={textStyleData}>{novedad?.novedad.email ? novedad?.novedad.email : "NaN"}</h3></th>
+                            </tr>
+                            <tr >
+                                <th><h3 id="titulo" style={textStyle}>Telefono:</h3></th>
+                                <th><h3 id="titulo" style={textStyleData}>{novedad?.novedad.telefono ? novedad?.novedad.telefono : "NaN"}</h3></th>
+                            </tr>
+                        </tbody>
+                    </table>
 
                 </div>
                 <div style={sectionStyle}>
                     <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Causa de la Novedad</h2>
                     <hr color='#3399ff'/>
-                    <h3 id="titulo" style={textStyle}>Catergoria: {novedad?.novedad.categoria}</h3>
+                    <table >
+                        <tbody>
+                            <tr >
+                                <th><h3 style={textStyle}>Catergoria:</h3></th>
+                                <th><h3 style={textStyleData}>{novedad?.novedad.categoria}</h3></th>
+                            </tr>
+                        </tbody>
+                    </table>
                     <h3 id="titulo" style={textStyle}>Causa:</h3>
                     <div style={{textAlign: "start", width: "400px"}}>
                         {novedad?.novedad.causa.split('+').map((p) => (

@@ -106,7 +106,7 @@ export default function CrearNovedad () {
 
             <div>
                 <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                    Email del Trabajador
+                    Email del Operario
                 </h3>
                 <div style={{marginBottom: "10px"}}>
                     <input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
@@ -114,7 +114,7 @@ export default function CrearNovedad () {
             </div>
             <div>
                 <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                    Telefono del Trabajador
+                    Telefono del Operario
                 </h3>
                 <div style={{marginBottom: "10px"}}>
                     <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
