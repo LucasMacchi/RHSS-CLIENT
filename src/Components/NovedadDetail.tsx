@@ -542,7 +542,7 @@ export default function NovedadDetail () {
     const displayAction = () => {
         if(action.legajo) {
             return (
-                <div>
+                <div style={{marginTop:"80px"}}>
                     <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>{action.categoria +" - "+action.fecha}</h2>
                     <hr color='#3399ff' style={{width: "100%"}}/>
                     <h3 id="titulo" style={textStyle}>Fecha de lo ocurrido o inicial: {action.fecha_inicial}</h3>
