@@ -24,6 +24,12 @@ export default function CrearNovedadS () {
     const [show, setShow] = useState(false)
     const [dateStart, setDateStart] = useState('')
     const [dateEnd, setDateEnd] = useState('')
+    const [direccion, setDireccion] = useState('')
+    const [nacimiento, setNacimiento] = useState('')
+    const [servicio, setServicio] = useState('')
+    const [jornada, setJornada] = useState('')
+    const [fullname, setFullname] = useState('')
+    const [dateIngreso, setDateIngreso] = useState('')
 
 
     useEffect(()=>{
@@ -39,7 +45,11 @@ export default function CrearNovedadS () {
         setDateStart('')
         setDescripcion('')
         setLegajosS('')
-    },[show])
+        setJornada('')
+        setNacimiento('')
+        setServicio('')
+        setDireccion('')
+    },[show, categoria])
 
     useEffect(() => {
         let arr = legajos
@@ -77,11 +87,37 @@ export default function CrearNovedadS () {
                 setNovedades(novedadesR)
                 setLoading(false)
             }, 1500);
+            setCategoria('')
         }
         else {
             setLoading(false)
             alert("Seleccione fechas validas y una empresa. Si busca el numero de novedad tiene que tener 5 digitos como minimo.")
         }
+    }
+
+    const createAltaNovedad = () => {
+        const username = localStorage.getItem('username')
+        if(direccion.length > 0 && nacimiento.length > 0 && legajo && email.length > 0 && 
+            telefono.length > 0 && jornada.length > 0 && servicio.length > 0 && fullname.length>0 && username) {
+            if(confirm("Quieres informar una nueva alta de legajo?")){
+                setLoading(true)
+                const des = `Datos del trabajador:\n+Nombre Completo: ${fullname}\n+Direccion: ${direccion}\n+Fecha de Nacimiento: ${nacimiento}\n+CUIL: ${legajo}\n+Fecha de Ingreso: ${dateIngreso}\n+Jornada: ${jornada}\n+Lugar de Trabajo: ${servicio}\n+Email: ${email}\n+Telefono: ${telefono}`
+                const data: INovDto = {
+                    solicitante: username,
+                    causa: des,
+                    legajo: 1,
+                    categoria: categoria,
+                    email: email,
+                    telefono: telefono
+                }
+                setTimeout(() => {
+                    setLoading(false)
+                    postNovedad(data)
+                }, 1500);
+                setCategoria('')
+            }
+        }
+        else alert("Faltan datos del Trabajador")
     }
 
     const createNovedad = () => {
@@ -191,62 +227,138 @@ export default function CrearNovedadS () {
                                 ))}
                             </select>
                     </div>
+                    {categoria === "ALTA DE LEGAJO" ?
                     <div>
-                        <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                            Email del Trabajador
-                        </h3>
-                        <div style={{marginBottom: "10px"}}>
-                            <input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
+                        <div>
+                            <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Datos del Trabajador
+                            </h3>
+                            <div>
+                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                    Nombre Completo
+                                </h4>
+                                <div style={{marginBottom: "10px"}}>
+                                    <input type="text" value={fullname} onChange={e => setFullname(e.target.value)}/>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                    Email del Trabajador
+                                </h4>
+                                <div style={{marginBottom: "10px"}}>
+                                    <input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                    Telefono del Trabajador
+                                </h4>
+                                <div style={{marginBottom: "10px"}}>
+                                    <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
+                                </div>
+                            </div>
+                            <div style={{marginBottom: "10px"}}>
+                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                    Direccion
+                                </h4>
+                                <input type="text" value={direccion} onChange={e => setDireccion(e.target.value)}/>
+                            </div>
+                            <div style={{marginBottom: "10px"}}>
+                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                    Nacimiento
+                                </h4>
+                                <input type="date" value={nacimiento} onChange={e => setNacimiento(e.target.value)}/>
+                            </div>
+                            <div style={{marginBottom: "10px"}}>
+                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                    CUIL
+                                </h4>
+                                <input type="number" value={legajo} onChange={e => setLegajo(parseInt(e.target.value))}/>
+                            </div>
+                            <div style={{marginBottom: "10px"}}>
+                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                    Fecha de Ingreso
+                                </h4>
+                                <input type="date" value={dateIngreso} onChange={e => setDateIngreso(e.target.value)}/>
+                            </div>
+                            <div style={{marginBottom: "10px"}}>
+                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                    Jornada de Trabajo
+                                </h4>
+                                <input type="text" value={jornada} onChange={e => setJornada(e.target.value)}/>
+                            </div>
+                            <div style={{marginBottom: "10px"}}>
+                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                    Lugar de Trabajo
+                                </h4>
+                                <input type="text" value={servicio} onChange={e => setServicio(e.target.value)}/>
+                            </div>
+                            <div>
+                                <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}} disabled={load} 
+                                onClick={() => createAltaNovedad()}>{load ? "Registrando...." : "Registrar"}</button>
+                            </div>
                         </div>
                     </div>
+                    :
                     <div>
-                        <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                            Telefono del Trabajador
-                        </h3>
-                        <div style={{marginBottom: "10px"}}>
-                            <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
+                        <div>
+                            <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Email del Trabajador
+                            </h3>
+                            <div style={{marginBottom: "10px"}}>
+                                <input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Telefono del Trabajador
+                            </h3>
+                            <div style={{marginBottom: "10px"}}>
+                                <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Legajos
+                            </h3>
+                            <div style={{marginBottom: "10px"}}>
+                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                    Buscar por nombre
+                                </h4>
+                                <input type="text" value={legajosS} onChange={e => setLegajosS(e.target.value)}/>
+                            </div>
+                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                    Legajos encontrados - {legajosF.length}
+                                </h4>
+                                <select name="causa" id="causa-selecet" style={filterSelect}
+                                onChange={e=>setLegajo(parseInt(e.target.value))} value={legajo}>
+                                    <option value={0}>---</option>
+                                    {legajosF.map((e) => (
+                                        <option key={e.legajo} value={e.legajo}>{e.legajo+'-'+e.fullname}</option>
+                                    ))}
+                                </select>
+                        </div>
+                        <div>
+                            <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Descripcion
+                            </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {descripcion.length}
+                            </h5>
+                            <textarea value={descripcion} onChange={e => setDescripcion(e.target.value)}
+                            style={{width: "350px", maxWidth: "300px", height: "200px", resize: "none"}}/>
+                        </div>
+                        <div>
+                            <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}} disabled={load} 
+                            onClick={() => createNovedad()}>{load ? "Registrando...." : "Registrar"}</button>
                         </div>
                     </div>
-                    <div>
-                        <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                            Legajos
-                        </h3>
-                        <div style={{marginBottom: "10px"}}>
-                            <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
-                                Buscar por nombre
-                            </h4>
-                            <input type="text" value={legajosS} onChange={e => setLegajosS(e.target.value)}/>
-                        </div>
-                            <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
-                                Legajos encontrados - {legajosF.length}
-                            </h4>
-                            <select name="causa" id="causa-selecet" style={filterSelect}
-                            onChange={e=>setLegajo(parseInt(e.target.value))} value={legajo}>
-                                <option value={0}>---</option>
-                                {legajosF.map((e) => (
-                                    <option key={e.legajo} value={e.legajo}>{e.legajo+'-'+e.fullname}</option>
-                                ))}
-                            </select>
-                    </div>
-
-                    <div>
-                        <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                            Descripcion
-                        </h3>
-                        <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                            Minimo de 50 caracteres - Actuales {descripcion.length}
-                        </h5>
-                        <textarea value={descripcion} onChange={e => setDescripcion(e.target.value)}
-                        style={{width: "350px", maxWidth: "300px", height: "200px", resize: "none"}}/>
-                    </div>
-                    <div>
-                        <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}} disabled={load} 
-                        onClick={() => createNovedad()}>{load ? "Registrando...." : "Registrar"}</button>
-                    </div>``
+                    }
                 </div>
             )
         }
     }
+
 
 
     return(

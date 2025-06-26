@@ -1,12 +1,12 @@
 import { useState,useEffect } from "react";
-import type {IAction, IEmpresa, INovedad, INovLeg } from "../utils/interfaces";
+import type { IAlta, IAction, IEmpresa, INovedad, INovLeg } from "../utils/interfaces";
 import { useParams } from "react-router";
 import Header from "./Header";
 import getUniqNovedad from "../utils/getUniqNovedad";
 import { getCategoriasNov, getEmpresas } from "../utils/getData";
 import getNovedadesLegajo from "../utils/getNovedadesLegajo";
 import session from "../utils/session";
-import { changeState, createAusenteFn, createLicenciaFn, createPersonalFn, createSancionFn, getArchivo, postArchivo } from "../utils/createActions";
+import { changeState, createAltaFn, createAusenteFn, createLicenciaFn, createPersonalFn, createSancionFn, deleteFileFn, getArchivo, postArchivo } from "../utils/createActions";
 
 
 export default function NovedadDetail () {
@@ -20,6 +20,17 @@ export default function NovedadDetail () {
     const [dataCheck, setDataCherck] = useState(false)
     const [concepto, setConcepto] = useState('')
     const [file, setFile] = useState<File | null>(null)
+    const [altaData, setAltaData]= useState<IAlta>({
+        legajo: 0,
+        fecha_ingreso: '',
+        cuit: 0,
+        direccion: '',
+        nacimiento: '',
+        jornada: 0,
+        lugar: '',
+        categoria: '',
+        novedad: 0
+    })
     const [data, setData] = useState({
         date_start: '',
         date_end: '',
@@ -69,6 +80,7 @@ export default function NovedadDetail () {
         if(novedad?.legajo.legajo)[
             getNovsLegajo(novedad?.legajo.legajo)
         ]
+        
     },[novedad])
 
     useEffect(() => {
@@ -119,6 +131,10 @@ export default function NovedadDetail () {
             ...data,
             [prop]: payload
         })
+    }
+
+    const handleAlta = (prop: string, payload: string | number) => {
+        setAltaData({...altaData,[prop]:payload})
     }
 
     const handleActionData = (legajo: number, fecha: string, causa: string, categoria: string, fecha_inicial?:string, fecha_final?:string) => {
@@ -256,6 +272,47 @@ export default function NovedadDetail () {
         }
     }
 
+    const createAlta = async () => {
+        console.log(altaData, novedad?.novedad.novedad_id)
+        if(altaData.categoria.length>0 && altaData.direccion.length>0 && 
+            altaData.fecha_ingreso.length>0 && altaData.lugar.length>0 &&
+            altaData.nacimiento.length>0 && altaData.cuit && altaData.jornada
+            && altaData.legajo && novedad && novedad.novedad && novedad.novedad.novedad_id
+        ){
+            if(confirm("Quieres realizar una nueva Alta?")) {
+                const data = altaData
+                data.novedad = novedad.novedad.novedad_id
+                await createAltaFn(data)
+                alert("Alta creada")
+                setAltaData({
+                    legajo: 0,
+                    fecha_ingreso: '',
+                    cuit: 0,
+                    direccion: '',
+                    nacimiento: '',
+                    jornada: 0,
+                    lugar: '',
+                    categoria: '',
+                    novedad: 0
+                })
+                window.location.reload()
+            }
+        }
+        else alert("Faltan datos.")
+
+    }
+
+    const deleteFile = async (url: string, concepto: string, id:number) => {
+        if(url && confirm("Quieres eliminar el archivo de concepto "+concepto+"?")) {
+            const res = await deleteFileFn(url,id)
+            if(res) {
+                alert("Archivo Eliminado!")
+                window.location.reload()
+            }
+            else alert("Error al eliminar el archivo")
+        }
+    }
+
     const displayForms = () => {
         switch(categoria) {
             case 1:
@@ -381,6 +438,51 @@ export default function NovedadDetail () {
                         </div>
                     </div>
                 )
+            case 13:
+                return(
+                    <div style={sectionActionStyle}>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Fecha de Ingreso: </h3></th>
+                                    <th><input type="date" value={altaData.fecha_ingreso} onChange={e => handleAlta('fecha_ingreso',e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>CUIL:</h3></th>
+                                    <th><input type="number" value={altaData.cuit} onChange={e => handleAlta("cuit",e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Direccion:</h3></th>
+                                    <th><input type="text" value={altaData.direccion} onChange={e => handleAlta("direccion",e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Nacimiento:</h3></th>
+                                    <th><input type="date" value={altaData.nacimiento} onChange={e => handleAlta("nacimiento",e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Jornada:</h3></th>
+                                    <th><input type="number" value={altaData.jornada} onChange={e => handleAlta("jornada",e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Categoria:</h3></th>
+                                    <th><input type="text" value={altaData.categoria} onChange={e => handleAlta("categoria",e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Lugar de Trabajo:</h3></th>
+                                    <th><input type="text" value={altaData.lugar} onChange={e => handleAlta("lugar",e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Legajo:</h3></th>
+                                    <th><input type="number" value={altaData.legajo} onChange={e => handleAlta("legajo",e.target.value)}/></th>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createAlta()}>Registrar Alta</button>
+                        </div>
+                    </div>
+                )
             case 25:
                 return(
                     <div style={sectionActionStyle}>
@@ -399,6 +501,27 @@ export default function NovedadDetail () {
                     </div>
                 )
             case 26:
+                return (
+                    <div style={{...sectionActionStyle, marginTop: "30px"}}>
+                    <table style={{width: "400px"}}>
+                        <tbody>
+                            <tr>
+                                <th style={novTr}>Tipo</th>
+                                <th style={novTr}>Fecha</th>
+                                <th style={novTr}>Categoria/Concepto</th>
+                            </tr>
+                            {novedad?.archivos.map((a) => (
+                            <tr onClick={() => deleteFile(a.ruta, a.concepto, a.archivo_id)}>
+                                <th style={novTr}>Archivo</th>
+                                <th style={novTr}>{a.fecha}</th>
+                                <th style={novTr}>{a.concepto}</th>
+                            </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    </div>
+                )
+            case 27:
                 return (
                     <div style={{...sectionActionStyle, marginTop: "30px"}}>
                         <div>
@@ -422,7 +545,7 @@ export default function NovedadDetail () {
                 <div>
                     <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>{action.categoria +" - "+action.fecha}</h2>
                     <hr color='#3399ff' style={{width: "100%"}}/>
-                    <h3 id="titulo" style={textStyle}>Fecha de lo ocurrido o inicial: {action.fecha}</h3>
+                    <h3 id="titulo" style={textStyle}>Fecha de lo ocurrido o inicial: {action.fecha_inicial}</h3>
                     {action.fecha_final  ? 
                     <h3 id="titulo" style={textStyle}>Fecha final: {action.fecha_inicial}</h3> : ''}
                     <h3 id="titulo" style={textStyle}>Causa:</h3>
@@ -465,7 +588,9 @@ export default function NovedadDetail () {
                     <h3 id="titulo" style={textStyle}>Catergoria: {novedad?.novedad.categoria}</h3>
                     <h3 id="titulo" style={textStyle}>Causa:</h3>
                     <div style={{textAlign: "start", width: "400px"}}>
-                        <p id="titulo" style={parrafoStyle}>{novedad?.novedad.causa}</p>
+                        {novedad?.novedad.causa.split('+').map((p) => (
+                            <p id="titulo" style={parrafoStyle}>{p}</p>
+                        ))}
                     </div>
                 </div>
             </div>
@@ -479,7 +604,8 @@ export default function NovedadDetail () {
                         <option key={c} value={(i+1)}>{c}</option>
                     ))}
                     <option value={25}>SUBIR ARCHIVO</option>
-                    <option value={26}>{novedad?.novedad.cerrado ? "REABRIR NOVEDAD" : "CERRAR NOVEDAD"}</option>
+                    <option value={26}>ELIMINAR ARCHIVO</option>
+                    <option value={27}>{novedad?.novedad.cerrado ? "REABRIR NOVEDAD" : "CERRAR NOVEDAD"}</option>
                 </select>
                 {displayForms()}
                 {displayAction()}
@@ -558,6 +684,13 @@ export default function NovedadDetail () {
                                 <th style={novTr}>Archivo</th>
                                 <th style={novTr}>{a.fecha}</th>
                                 <th style={novTr}>{a.concepto}</th>
+                            </tr>
+                            ))}
+                            {novedad?.altas.map((a) => (
+                            <tr onClick={() => handleActionData(a.legajo, a.fecha ? a.fecha : a.fecha_ingreso, `Nuevo legajo creado ${a.legajo}, CUIL ${a.cuit}, Direccion ${a.direccion}, Lugar de Trabajo ${a.lugar}`,"ALTA LEGAJO "+a.legajo, a.fecha_ingreso)}>
+                                <th style={novTr}>Alta</th>
+                                <th style={novTr}>{a.fecha}</th>
+                                <th style={novTr}>{"Alta a "+a.legajo}</th>
                             </tr>
                             ))}
                         </tbody>

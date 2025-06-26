@@ -39,6 +39,17 @@ interface IUsuarioDto {
     administrativo: boolean,
     empresa_id: number
 }
+interface IAltaDro {
+    novedad: number,
+    legajo: number,
+    cuit: number,
+    fecha_ingreso: string,
+    direccion: string,
+    nacimiento: string,
+    jornada: number,
+    lugar: string,
+    categoria:string
+}
 
 export async function createAusenteFn (data: IAusenteDto): Promise<boolean> {
     console.log("Creando Ausente...")
@@ -67,6 +78,17 @@ export async function createLicenciaFn (data: ILicenciaDto): Promise<boolean> {
     console.log("Creando Licencia...")
     try {
         await axios.post(SERVER+"/licencia/create",data,{withCredentials: true})
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export async function createAltaFn(data:IAltaDro) {
+    console.log("Creando Alta...")
+    try {
+        await axios.post(SERVER+"/alta/create",data,{withCredentials: true})
         return true
     } catch (error) {
         console.log(error)
@@ -154,6 +176,20 @@ export async function getArchivo (urlFile: string) {
 export async function changeState (id: number): Promise<boolean> {
     try {
         await axios.patch(SERVER+"/novedad/state/"+id,{},{withCredentials: true})
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export async function  deleteFileFn (url:string,id:number): Promise<boolean> {
+    try {
+        const data = {
+            archivo_id: id,
+            url: url
+        }
+        axios.delete(SERVER+"/data/delete",{withCredentials: true, data})
         return true
     } catch (error) {
         console.log(error)

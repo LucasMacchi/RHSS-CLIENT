@@ -110,7 +110,8 @@ export interface IArchivo {
     ruta: string,
     concepto: string,
     novedad: number,
-    fecha: string
+    fecha: string,
+    archivo_id: number
 }
 
 export interface INovLeg {
@@ -120,7 +121,8 @@ export interface INovLeg {
     sanciones: ISancion[],
     personal: IPersonal[],
     licencias: ILicencia[],
-    archivos: IArchivo[]
+    archivos: IArchivo[],
+    altas: IAlta[]
 
 }
 
@@ -131,4 +133,18 @@ export interface IAction {
     fecha_final?: string,
     categoria: string,
     causa: string
+}
+
+export interface IAlta {
+    alta_id?: number,
+    novedad: number,
+    legajo: number,
+    fecha_ingreso: string,
+    fecha?:string,
+    cuit:number,
+    direccion:string,
+    nacimiento:string,
+    jornada:number,
+    lugar:string,
+    categoria: string
 }
