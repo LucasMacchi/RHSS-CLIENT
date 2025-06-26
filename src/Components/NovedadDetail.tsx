@@ -493,6 +493,7 @@ export default function NovedadDetail () {
                         <h3 id="subtitulo" style={textStyle}>
                             Archivo
                         </h3>
+                        <h5 id="subtitulo" style={{...textStyle, margin: "5px"}}>Limite de 10MB</h5>
                         <input style={{width: "300px", marginBottom: "30px"}} type="file" onChange={e => e.target.files && setFile(e.target.files[0])}/>
                         <div>
                             <button id="bg-btn" style={btnRegister}
