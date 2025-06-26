@@ -128,7 +128,7 @@ export default function Novedades () {
             }}
             >
                 <div style={filterDivStyle}>
-                    <h3 style={filterTitle}>Numero</h3>
+                    <h3 style={filterTitle}>ID Novedad</h3>
                     <input type="text" value={numero} onChange={e => setNumero(e.target.value)}/>
                 </div>
                 <div style={filterDivStyle}>
