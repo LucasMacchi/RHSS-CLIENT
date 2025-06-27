@@ -8,7 +8,6 @@ export default function Header () {
     const [navbar, setNavbar] = useState(false)
     const [admin, setAdmin] = useState(false)
     const location = useLocation();
-
     useEffect(() => {
         if(location.pathname !== "/login" && location.pathname !== "/Crear"){
             setNavbar(true)

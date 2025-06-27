@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react"
 import Header from "./Header"
 import session from "../utils/session"
-import type {ILegajo, INovDto, INovedad, INovFilter } from "../utils/interfaces"
-import { getAllLegajos, getCategoriasNov } from "../utils/getData"
+import type {ILegajo, INovDto, INovedad, INovFilter, IServicio, IServicioHora } from "../utils/interfaces"
+import { getAllCcos, getAllLegajos, getCategoriasNov } from "../utils/getData"
 import postNovedad from "../utils/postNovedad"
 import logoutFn from "../utils/logoutFn"
 import getNovedadesSup from "../utils/getNovedadesSup"
-
 
 export default function CrearNovedadS () {
     
@@ -15,6 +14,7 @@ export default function CrearNovedadS () {
     const [novedades, setNovedades] = useState<INovedad[]>([])
     const [legajos, setLegajos] = useState<ILegajo[]>([])
     const [legajosF, setLegajosF] = useState<ILegajo[]>([])
+    const [servicios, setServicios] = useState<IServicio[]>([])
     const [legajosS, setLegajosS] = useState<string>('')
     const [descripcion, setDescripcion] = useState('')
     const [legajo, setLegajo] = useState(0)
@@ -26,7 +26,11 @@ export default function CrearNovedadS () {
     const [dateEnd, setDateEnd] = useState('')
     const [direccion, setDireccion] = useState('')
     const [nacimiento, setNacimiento] = useState('')
-    const [servicio, setServicio] = useState('')
+    const [servicioHora, setServicioHora] = useState<IServicioHora[]>([])
+    const [uniqServHr, setUniqServHr] = useState<IServicioHora>({
+        servicio: '',
+        hr: 0
+    })
     const [jornada, setJornada] = useState('')
     const [fullname, setFullname] = useState('')
     const [dateIngreso, setDateIngreso] = useState('')
@@ -35,10 +39,16 @@ export default function CrearNovedadS () {
     useEffect(()=>{
         session(false)
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
-        getAllLegajos().then(lg=>setLegajos(lg))
+        setTimeout(() => {
+            const empresa = localStorage.getItem("empresa")
+            if(empresa !== null) getAllLegajos(empresa).then(lg=>setLegajos(lg))
+        }, 1500);
     },[])
 
     useEffect(() => {
+        if(categoria === "ALTA DE LEGAJO") {
+            getAllCcos().then(s => setServicios(s))
+        }
         setEmail('')
         setTelefono('')
         setDateEnd('')
@@ -47,8 +57,9 @@ export default function CrearNovedadS () {
         setLegajosS('')
         setJornada('')
         setNacimiento('')
-        setServicio('')
+        setServicioHora([])
         setDireccion('')
+        setUniqServHr({servicio: '',hr: 0})
     },[show, categoria])
 
     useEffect(() => {
@@ -60,13 +71,17 @@ export default function CrearNovedadS () {
     },[legajosS, legajos])
 
     const filterSelect: React.CSSProperties = {
-        fontSize: "large", width: "200px"
+        fontSize: "large", width: "250px"
     }
     const filterTitle: React.CSSProperties = {
         margin: "5px"
     }
     const filterDivStyle: React.CSSProperties = {
         color: "#6495ed"
+    }
+    const novTr: React.CSSProperties = {
+        border: "1px solid",
+        width: "200px"
     }
 
     const searchNovedades = () => {
@@ -98,10 +113,14 @@ export default function CrearNovedadS () {
     const createAltaNovedad = () => {
         const username = localStorage.getItem('username')
         if(direccion.length > 0 && nacimiento.length > 0 && legajo && email.length > 0 && 
-            telefono.length > 0 && jornada.length > 0 && servicio.length > 0 && fullname.length>0 && username) {
+            telefono.length > 0 && jornada.length > 0 && servicioHora.length > 0 && fullname.length>0 && username) {
             if(confirm("Quieres informar una nueva alta de legajo?")){
                 setLoading(true)
-                const des = `Datos del Operario:\n+Apellido y Nombre: ${fullname}\n+Direccion: ${direccion}\n+Fecha de Nacimiento: ${nacimiento}\n+CUIL: ${legajo}\n+Fecha de Ingreso: ${dateIngreso}\n+Jornada: ${jornada}\n+Lugar de Trabajo: ${servicio}\n+Email: ${email}\n+Telefono: ${telefono}`
+                let des = `Datos del Operario:\n+Apellido y Nombre: ${fullname}\n+Direccion: ${direccion}\n+Fecha de Nacimiento: ${nacimiento}\n+CUIL: ${legajo}\n+Fecha de Ingreso: ${dateIngreso}\n+Jornada: ${jornada}\n+Email: ${email}\n+Telefono: ${telefono}`
+                servicioHora.forEach(s => {
+                    const str = `\n+Lugar de Trabajo: ${s.hr} horas en ${s.servicio}`
+                    des.concat(str)
+                });
                 const data: INovDto = {
                     solicitante: username,
                     causa: des,
@@ -154,10 +173,33 @@ export default function CrearNovedadS () {
         window.location.href = "/login"
     }
 
+    const handleService = (payload: number | string, prop: string) => {
+        setUniqServHr({
+            ...uniqServHr,
+            [prop]: payload
+        })
+    }
+
+    const createWorkTime = () => {
+        if(uniqServHr.hr && uniqServHr.servicio.length > 0) {
+            servicioHora.push(uniqServHr)
+            setUniqServHr({hr: 0, servicio: ''})
+        }
+        else alert("Selecciones un lugar y las horas")
+
+    }
+
+    const deleteWorkTime = (index: number) => {
+        if(confirm("Quieres elimnar el lugar de trabajo?")) {
+            servicioHora.splice(index, index)
+            setUniqServHr({hr: 0, servicio: ''})
+        }
+    }
+
     const displayCreateNov = () => {
         if(show){
             return (
-                <div>
+                <div style={{marginBottom: "100px"}}>
                     <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff"}} >
                         Buscar Novedad
                     </h1>
@@ -210,7 +252,7 @@ export default function CrearNovedadS () {
         }
         else{
             return(
-                <div>
+                <div style={{marginBottom: "100px"}}>
                     <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff"}} >
                         Crear Novedad
                     </h1>
@@ -285,13 +327,45 @@ export default function CrearNovedadS () {
                                 <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
                                     Jornada de Trabajo
                                 </h4>
-                                <input type="text" value={jornada} onChange={e => setJornada(e.target.value)}/>
+                                <select name="causa" id="causa-selecet" style={filterSelect}
+                                onChange={e=>setJornada(e.target.value)} value={jornada}>
+                                    <option value={''}>---</option>
+                                    <option value={'Completa'}>JORNADA COMPLETA</option>
+                                    <option value={'Parcial'}>JORNADA PARCIAL</option>
+                                </select>
                             </div>
-                            <div style={{marginBottom: "10px"}}>
+                            <div style={{marginBottom: "50px"}}>
                                 <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
-                                    Lugar de Trabajo
+                                    Lugares de Trabajo y horas
                                 </h4>
-                                <input type="text" value={servicio} onChange={e => setServicio(e.target.value)}/>
+                                <select name="causa" id="causa-selecet" style={filterSelect}
+                                onChange={e=>handleService(e.target.value,'servicio')} value={uniqServHr.servicio}>
+                                    <option value={0}>---</option>
+                                    {servicios.map((s) => (
+                                        <option key={s.service_id} value={s.service_des}>{s.service_des}</option>
+                                    ))}
+                                </select>
+                                <input style={{width: "50px"}} type="number" min={0} max={8} value={uniqServHr.hr} onChange={e => handleService(parseInt(e.target.value),"hr")}/>
+                                <div>
+                                    <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "large", width: "120px", margin: "10px"}} 
+                                    onClick={() => createWorkTime()}>Agregar</button>
+                                </div>
+                                <div style={{display: "flex", justifyContent: "center"}}>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <th style={novTr}>Servicio</th>
+                                            <th style={novTr}>Horas</th>
+                                        </tr>
+                                        {servicioHora.map((s, i) => (
+                                            <tr onClick={() => deleteWorkTime(i)}>
+                                                <th style={novTr}>{s.servicio}</th>
+                                                <th style={novTr}>{s.hr}</th>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                </div>
                             </div>
                             <div>
                                 <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}} disabled={load} 

@@ -1,6 +1,7 @@
 import axios from "axios";
-import type { IEmpresa, ILegajo, IUsuario } from "./interfaces";
+import type { IEmpresa, ILegajo, IServicio, IUsuario } from "./interfaces";
 const SERVER = import.meta.env.VITE_SERVER;
+const SERVER2 = import.meta.env.VITE_SERVER_2;
 
 
 export async function getEmpresas(): Promise<IEmpresa[]> {
@@ -51,14 +52,29 @@ export async function getLegajos(nombre: string, egressed: boolean): Promise<ILe
     }
 }
 
-export async function getAllLegajos(): Promise<ILegajo[]> {
+export async function getAllLegajos(empresa: string): Promise<ILegajo[]> {
     try {
+        console.log("Legajos...")
         const res: ILegajo[] = (await axios.get(SERVER+"/data/legajos",{withCredentials: true})).data
         const newArr = res.filter((l) => {
             const egress = new Date(l.fecha_egreso)
-            if(egress.getTime() > Date.now()) return l
+            if(egress.getTime() >= Date.now()) {
+                if(l.empresa === empresa) return l
+            }
         })
+        console.log(empresa, newArr)
         return newArr
+    } catch (error) {
+        console.log(error)
+        return []
+    }
+}
+
+export async function getAllCcos(): Promise<IServicio[]> {
+    try {
+        const res: IServicio[] = (await axios.get(SERVER2+'/data/cco')).data
+        console.log(res)
+        return res
     } catch (error) {
         console.log(error)
         return []

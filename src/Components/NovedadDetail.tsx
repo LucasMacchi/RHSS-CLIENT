@@ -399,6 +399,10 @@ export default function NovedadDetail () {
             case 9:
             case 10:
             case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
                 return(
                     <div style={sectionActionStyle}>
                         <h3 id="titulo" style={textStyle}>Fecha Ocurrido: 
@@ -420,7 +424,7 @@ export default function NovedadDetail () {
                         </div>
                     </div>
                 )
-            case 12:
+            case 16:
                 return(
                     <div style={sectionActionStyle}>
                         <h3 id="titulo" style={textStyle}>Fecha: 
@@ -445,7 +449,7 @@ export default function NovedadDetail () {
                         </div>
                     </div>
                 )
-            case 13:
+            case 17:
                 return(
                     <div style={sectionActionStyle}>
                         <table>
@@ -477,10 +481,6 @@ export default function NovedadDetail () {
                                 <tr>
                                     <th><h3 id="titulo" style={textStyle}>Lugar de Trabajo:</h3></th>
                                     <th><input type="text" value={altaData.lugar} onChange={e => handleAlta("lugar",e.target.value)}/></th>
-                                </tr>
-                                <tr>
-                                    <th><h3 id="titulo" style={textStyle}>Legajo:</h3></th>
-                                    <th><input type="number" value={altaData.legajo} onChange={e => handleAlta("legajo",e.target.value)}/></th>
                                 </tr>
                             </tbody>
                         </table>
@@ -594,7 +594,7 @@ export default function NovedadDetail () {
                     </table>
                 </div>
                 <div style={sectionStyle}>
-                    <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Datos del Trabajador</h2>
+                    <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Datos del Operario</h2>
                     <hr color='#3399ff'/>
                     <table >
                         <tbody>
@@ -691,7 +691,7 @@ export default function NovedadDetail () {
                     }
                 </div>
                 <div>
-                <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Acciones asociadas a la novedad.</h2>
+                <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Acciones asociadas a la novedad</h2>
                 <hr color='#3399ff' style={{width: "100%"}}/>
                 </div>
                 <div style={{height: "250px", overflow: "scroll"}}>

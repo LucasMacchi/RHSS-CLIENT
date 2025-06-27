@@ -8,7 +8,9 @@ export default async function (adm:boolean) {
     setTimeout(() => {
         console.log(res)
         localStorage.setItem('username', res.username)
+        localStorage.setItem('empresa', res.empresa)
         if(res.admin) localStorage.setItem('admin',res.username)
+        else localStorage.removeItem('admin')
         if(adm) {
             if(!res.administrativo && res.username.length > 0){
                 window.location.href = "/Crear"

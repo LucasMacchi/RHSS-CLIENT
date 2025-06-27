@@ -1,7 +1,8 @@
 export interface ISession {
     username: string,
     admin: boolean,
-    administrativo: boolean
+    administrativo: boolean,
+    empresa: string
 }
 
 export interface INovedad {
@@ -61,7 +62,10 @@ export interface ILegajo {
     cuil: number,
     sector: string,
     fecha_egreso: string,
-    direccion: string
+    direccion: string,
+    empresa:string,
+    telefono:number,
+    email:string
 }
 
 export interface IAusente {
@@ -147,4 +151,16 @@ export interface IAlta {
     jornada:number,
     lugar:string,
     categoria: string
+}
+export interface IServicio {
+    service_id: number,
+    client_id: number,
+    service_des: string,
+    client_des: string,
+    localidad: string
+}
+
+export interface IServicioHora{
+    servicio: string,
+    hr:number
 }

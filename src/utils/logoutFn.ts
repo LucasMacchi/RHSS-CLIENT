@@ -5,5 +5,6 @@ export default async function (): Promise<void> {
     await axios.delete(SERVER+"/usuario/logout",{withCredentials: true})
     localStorage.removeItem('username')
     localStorage.removeItem("admin")
+    localStorage.removeItem('empresa')
     document.cookie = "SESSIONCK=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
