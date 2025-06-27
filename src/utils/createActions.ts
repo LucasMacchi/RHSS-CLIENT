@@ -62,6 +62,17 @@ export async function createAusenteFn (data: IAusenteDto): Promise<boolean> {
     }
 }
 
+export async function createTardanzaFn (data: IAusenteDto): Promise<boolean> {
+    console.log("Creando Tardanza...")
+    try {
+        await axios.post(SERVER+"/ausente/late/create",data,{withCredentials: true})
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
 export async function createSancionFn (data: ISancionDto): Promise<boolean> {
     console.log("Creando Sancion...")
     try {

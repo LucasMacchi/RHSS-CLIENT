@@ -6,7 +6,7 @@ import getUniqNovedad from "../utils/getUniqNovedad";
 import { getCategoriasNov, getEmpresas } from "../utils/getData";
 import getNovedadesLegajo from "../utils/getNovedadesLegajo";
 import session from "../utils/session";
-import { changeState, createAltaFn, createAusenteFn, createLicenciaFn, createPersonalFn, createSancionFn, deleteFileFn, getArchivo, postArchivo } from "../utils/createActions";
+import { changeState, createAltaFn, createAusenteFn, createLicenciaFn, createPersonalFn, createSancionFn, createTardanzaFn, deleteFileFn, getArchivo, postArchivo } from "../utils/createActions";
 
 
 export default function NovedadDetail () {
@@ -165,13 +165,25 @@ export default function NovedadDetail () {
                 novedad_id: novedad.novedad.novedad_id,
                 causa: data.causa
             }
-            const res = await createAusenteFn(ausente)
-            if(res) {
-                alert("Ausente creado.")
-                window.location.reload()
-                setData({date_end: '',date_start: '',causa: ''})
+            if(categoria !== 17){
+                const res = await createAusenteFn(ausente)
+                if(res) {
+                    alert("Ausente creado.")
+                    window.location.reload()
+                    setData({date_end: '',date_start: '',causa: ''})
+                }
+                else alert("Error al crear ausente.")
             }
-            else alert("Error al crear ausente.")
+            else {
+                const res = await createTardanzaFn(ausente)
+                if(res) {
+                    alert("Tardanza creada.")
+                    window.location.reload()
+                    setData({date_end: '',date_start: '',causa: ''})
+                }
+                else alert("Error al crear ausente.")
+            }
+
         } else alert("Debe ingresar una causa con no menos de 50 caracteres y una fecha valida.")
     }
     const createPersonal = async () => {
@@ -452,6 +464,31 @@ export default function NovedadDetail () {
             case 17:
                 return(
                     <div style={sectionActionStyle}>
+                        <h3 id="titulo" style={textStyle}>Fecha: 
+                            <input type="date" value={data.date_start} onChange={e => handleData('date_start',e.target.value)}/>
+                        </h3>
+                        <h3 id="titulo" style={textStyle}>Justificacion: 
+                            <input type="checkbox" checked={dataCheck} onChange={e => setDataCherck(e.target.checked)}/>
+                        </h3>
+                        <div>
+                            <h3 id="subtitulo" style={textStyle}>
+                                Descripcion
+                            </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {data.causa.length}
+                            </h5>
+                            <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
+                            style={textAreaStyle}/>
+                        </div>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createAusente()}>Registrar Tardanza</button>
+                        </div>
+                    </div>
+                )
+            case 18:
+                return(
+                    <div style={sectionActionStyle}>
                         <table>
                             <tbody>
                                 <tr>
@@ -703,8 +740,8 @@ export default function NovedadDetail () {
                                 <th style={novTr}>Categoria/Concepto</th>
                             </tr>
                             {novedad?.ausentes.map((n) => (
-                            <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, "Ausente", n.fecha_ausentada)}>
-                                <th style={novTr}>Ausente</th>
+                            <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.categoria, n.fecha_ausentada)}>
+                                <th style={novTr}>{n.categoria}</th>
                                 <th style={novTr}>{n.fecha}</th>
                                 <th style={novTr}>{n.justificado ? "Justificado" : "No Justificado"}</th>
                             </tr>

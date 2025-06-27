@@ -75,7 +75,8 @@ export interface IAusente {
     fecha_ausentada: string,
     novedad_id: number,
     legajo: number,
-    causa: string
+    causa: string,
+    categoria: string
 }
 
 export interface ISancion {
