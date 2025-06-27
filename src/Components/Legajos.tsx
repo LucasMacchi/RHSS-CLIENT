@@ -11,7 +11,7 @@ export default function Legajos () {
     const [legajosS, setLegajosS] = useState<string>('')
     const [novedades, setNovedades] = useState<INovedad[] | null>()
     const [egressed, setEgress] = useState(false)
-    const [legajoN, setLegajoN] = useState<ILegajo>({legajo: 0, cuil: 0, fullname: '', sector: '', direccion: '', fecha_egreso: ''})
+    const [legajoN, setLegajoN] = useState<ILegajo>({legajo: 0, cuil: 0, fullname: '', sector: '', direccion: '', fecha_egreso: '', email: '', empresa: '', telefono: 0})
 
     useEffect(() => {
         session(true)
