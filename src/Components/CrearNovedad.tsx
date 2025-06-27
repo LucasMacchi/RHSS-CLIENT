@@ -25,7 +25,10 @@ export default function CrearNovedad () {
         session(true)
         getEmpresas().then(em=>setEmpresasSele(em))
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
-        getAllLegajos().then(lg=>setLegajos(lg))
+        setTimeout(() => {
+            const empresa = localStorage.getItem("empresa")
+            if(empresa !== null) getAllLegajos(empresa).then(lg=>setLegajos(lg))
+        }, 1500);
     },[])
 
     useEffect(() => {
