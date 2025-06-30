@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import Header from "./Header"
 import session from "../utils/session"
-import type {ILegajo, INovDto, INovedad, INovFilter, IServicio, IServicioHora } from "../utils/interfaces"
+import type {IFilesLoad, ILegajo, INovDto, INovedad, INovFilter, IServicio, IServicioHora } from "../utils/interfaces"
 import { getAllCcos, getAllLegajos, getCategoriasNov } from "../utils/getData"
 import postNovedad from "../utils/postNovedad"
 import logoutFn from "../utils/logoutFn"
@@ -15,6 +15,7 @@ export default function CrearNovedadS () {
     const [legajos, setLegajos] = useState<ILegajo[]>([])
     const [legajosF, setLegajosF] = useState<ILegajo[]>([])
     const [servicios, setServicios] = useState<IServicio[]>([])
+    const [serviciosF, setServiciosF] = useState<IServicio[]>([])
     const [legajosS, setLegajosS] = useState<string>('')
     const [descripcion, setDescripcion] = useState('')
     const [legajo, setLegajo] = useState(0)
@@ -34,6 +35,8 @@ export default function CrearNovedadS () {
     const [jornada, setJornada] = useState('')
     const [fullname, setFullname] = useState('')
     const [dateIngreso, setDateIngreso] = useState('')
+    const [fileLoad, setFileLoad] = useState<IFilesLoad>({concepto:'', file: null})
+    const [files, setFiles] = useState<IFilesLoad[]>([])
 
 
     useEffect(()=>{
@@ -54,21 +57,34 @@ export default function CrearNovedadS () {
         setDateEnd('')
         setDateStart('')
         setDescripcion('')
-        setLegajosS('')
         setJornada('')
         setNacimiento('')
         setServicioHora([])
         setDireccion('')
         setUniqServHr({servicio: '',hr: 0})
+        setFiles([])
+        setFileLoad({concepto: '', file: null})
+
     },[show, categoria])
 
     useEffect(() => {
-        let arr = legajos
-        if(arr.length > 0) {
-            if(legajosS.length > 3) arr = arr.filter((l) => l.fullname.toLocaleLowerCase().includes(legajosS.toLocaleLowerCase()))
+        if(categoria === "ALTA DE LEGAJO") {
+            let arr = servicios
+            if(legajosS.length > 3) {
+                arr = arr.filter((s) => s.service_des.toLowerCase().includes(legajosS.toLowerCase()))
+            }
+            setServiciosF(arr)
         }
-        setLegajosF(arr)
-    },[legajosS, legajos])
+        else{
+            console.log("Legajos changing")
+            let arr = legajos
+            if(arr.length > 0) {
+                if(legajosS.length > 3) arr = arr.filter((l) => l.fullname.toLocaleLowerCase().includes(legajosS.toLocaleLowerCase()))
+            }
+            setLegajosF(arr)
+        }
+
+    },[legajosS, legajos, servicios])
 
     const filterSelect: React.CSSProperties = {
         fontSize: "large", width: "250px"
@@ -82,6 +98,26 @@ export default function CrearNovedadS () {
     const novTr: React.CSSProperties = {
         border: "1px solid",
         width: "200px"
+    }
+
+    const addFile = () => {
+        if(fileLoad.concepto && fileLoad.file){
+            files.push(fileLoad)
+            setFileLoad({concepto: '', file: null})
+        }
+        else alert("Faltan datos para cargar el archivo")
+    }
+
+    const deleteFile = (index: number) => {
+        if(confirm("Quieres elimnar el archivo?")) {
+            if(files.length === 1){
+                setFiles([])
+                setFileLoad({concepto: '', file: null})
+            }else {
+                files.splice(index, index)
+                setFileLoad({concepto: '', file: null})
+            }
+        }
     }
 
     const searchNovedades = () => {
@@ -119,7 +155,7 @@ export default function CrearNovedadS () {
                 let des = `Datos del Operario:\n+Apellido y Nombre: ${fullname}\n+Direccion: ${direccion}\n+Fecha de Nacimiento: ${nacimiento}\n+CUIL: ${legajo}\n+Fecha de Ingreso: ${dateIngreso}\n+Jornada: ${jornada}\n+Email: ${email}\n+Telefono: ${telefono}`
                 servicioHora.forEach(s => {
                     const str = `\n+Lugar de Trabajo: ${s.hr} horas en ${s.servicio}`
-                    des.concat(str)
+                    des += str
                 });
                 const data: INovDto = {
                     solicitante: username,
@@ -129,9 +165,15 @@ export default function CrearNovedadS () {
                     email: email,
                     telefono: telefono
                 }
+                let filesToSend:File[] = []
+                if(files.length > 0){
+                    files.forEach(f => {
+                        if(f.file) filesToSend.push(f.file)
+                    });
+                }
                 setTimeout(() => {
                     setLoading(false)
-                    postNovedad(data)
+                    postNovedad(data, filesToSend.length > 0 ? filesToSend : [])
                 }, 1500);
                 setCategoria('')
             }
@@ -154,9 +196,15 @@ export default function CrearNovedadS () {
                     email: email,
                     telefono: telefono
                 }
+                let filesToSend:File[] = []
+                if(files.length > 0){
+                    files.forEach(f => {
+                        if(f.file) filesToSend.push(f.file)
+                    });
+                }
                 setTimeout(() => {
                     setLoading(false)
-                    postNovedad(data)
+                    postNovedad(data, filesToSend.length > 0 ? filesToSend : [])
                 }, 1500);
                 setDescripcion('')
                 setLegajo(0)
@@ -164,6 +212,7 @@ export default function CrearNovedadS () {
                 setLegajosS('')
                 setEmail('')
                 setTelefono('')
+                setServiciosF([])
             }
         }
         else alert("Asegurese de haber seleccionado un legajo y categoria. Ademas que la descripcion puede ser corta y faltan datos de contacto.")
@@ -194,6 +243,41 @@ export default function CrearNovedadS () {
             servicioHora.splice(index, index)
             setUniqServHr({hr: 0, servicio: ''})
         }
+    }
+
+    const displayFileUpload = () => {
+        return (
+            <div style={{...filterDivStyle, marginBottom: "50px", marginTop:"50px"}}>
+                <h3 style={filterTitle} >Subir Archivos</h3>
+                <h4 style={filterTitle} >Concepto</h4>
+                <div>
+                    <input type="text" value={fileLoad.concepto} onChange={e => setFileLoad({...fileLoad, concepto: e.target.value})}/>
+                </div>
+                <div>
+                    <input type="file"  onChange={e => setFileLoad({...fileLoad, file: e.target.files ? e.target.files[0] : null})}/>
+                </div>
+                <div>
+                    <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "large", width: "120px", margin: "10px"}} 
+                    onClick={() => addFile()}>Agregar</button>
+                </div>
+                <div style={{display: "flex", justifyContent: "center"}}>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th style={novTr}>Concepto</th>
+                                <th style={novTr}>Archivo</th>
+                            </tr>
+                            {files.map((f, i) => (
+                                <tr onClick={() => deleteFile(i)}>
+                                    <th style={novTr}>{f.concepto}</th>
+                                    <th style={novTr}>{f.file?.name}</th>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        )
     }
 
     const displayCreateNov = () => {
@@ -245,7 +329,7 @@ export default function CrearNovedadS () {
                         <h3>{n.categoria}</h3>
                     </div>
                 ))}
-            </div>
+                    </div>
                     </div>
                 </div>
             )
@@ -338,10 +422,17 @@ export default function CrearNovedadS () {
                                 <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
                                     Lugares de Trabajo y horas
                                 </h4>
+                                <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                    Buscar servicio por nombre
+                                </h5>
+                                <input type="text" value={legajosS} onChange={e => setLegajosS(e.target.value)}/>
+                                <h6 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                                    {serviciosF.length} - Encontrados
+                                </h6>
                                 <select name="causa" id="causa-selecet" style={filterSelect}
                                 onChange={e=>handleService(e.target.value,'servicio')} value={uniqServHr.servicio}>
                                     <option value={0}>---</option>
-                                    {servicios.map((s) => (
+                                    {serviciosF.map((s) => (
                                         <option key={s.service_id} value={s.service_des}>{s.service_des}</option>
                                     ))}
                                 </select>
@@ -367,6 +458,7 @@ export default function CrearNovedadS () {
                                 </table>
                                 </div>
                             </div>
+                            {displayFileUpload()}
                             <div>
                                 <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}} disabled={load} 
                                 onClick={() => createAltaNovedad()}>{load ? "Registrando...." : "Registrar"}</button>
@@ -407,8 +499,8 @@ export default function CrearNovedadS () {
                                 <select name="causa" id="causa-selecet" style={filterSelect}
                                 onChange={e=>setLegajo(parseInt(e.target.value))} value={legajo}>
                                     <option value={0}>---</option>
-                                    {legajosF.map((e) => (
-                                        <option key={e.legajo} value={e.legajo}>{e.legajo+'-'+e.fullname}</option>
+                                    {legajosF.map((e, i) => (
+                                        <option key={e.legajo+'-'+i} value={e.legajo}>{e.legajo+'-'+e.fullname}</option>
                                     ))}
                                 </select>
                         </div>
@@ -422,6 +514,7 @@ export default function CrearNovedadS () {
                             <textarea value={descripcion} onChange={e => setDescripcion(e.target.value)}
                             style={{width: "350px", maxWidth: "300px", height: "200px", resize: "none"}}/>
                         </div>
+                        {displayFileUpload()}
                         <div>
                             <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}} disabled={load} 
                             onClick={() => createNovedad()}>{load ? "Registrando...." : "Registrar"}</button>

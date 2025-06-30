@@ -41,7 +41,6 @@ interface IUsuarioDto {
 }
 interface IAltaDro {
     novedad: number,
-    legajo: number,
     cuit: number,
     fecha_ingreso: string,
     direccion: string,

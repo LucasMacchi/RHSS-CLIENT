@@ -43,7 +43,8 @@ export interface IUsuario {
     username: string,
     fecha_creacion: string,
     activado: boolean,
-    usuario_id: number
+    usuario_id: number,
+    password: string
 }
 
 export interface INovDto {
@@ -143,7 +144,6 @@ export interface IAction {
 export interface IAlta {
     alta_id?: number,
     novedad: number,
-    legajo: number,
     fecha_ingreso: string,
     fecha?:string,
     cuit:number,
@@ -164,4 +164,9 @@ export interface IServicio {
 export interface IServicioHora{
     servicio: string,
     hr:number
+}
+
+export interface IFilesLoad {
+    concepto: string,
+    file: File | null
 }

@@ -17,7 +17,8 @@ export default function Usuarios () {
         username: '',
         administrativo: false,
         email: '',
-        empresa_id: 1
+        empresa_id: 1,
+        password: ''
     })
 
     const handleRegister = (prop: string, payload: string | number | boolean) => {
@@ -82,7 +83,8 @@ export default function Usuarios () {
                 username: '',
                 administrativo: false,
                 email: '',
-                empresa_id: 1
+                empresa_id: 1,
+                password: ''
                 })
             }
         }else alert("Faltan datos.")
@@ -113,8 +115,9 @@ export default function Usuarios () {
                                 <th style={novTr}>Administrativo</th>
                                 <th style={novTrBg}>Email</th>
                                 <th style={novTrBg}>Empresa</th>
-                                <th style={novTrBg}>Fecha de Creacion</th>
+                                <th style={novTr}>Fecha de Creacion</th>
                                 <th style={novTr}>Activado</th>
+                                <th style={novTrBg}>Contraseña</th>
                             </tr>
                             {usuarios.map((u) => (
                                 <tr onClick={() => u.activado ? deactivate(u.usuario_id) : activate(u.usuario_id)}>
@@ -125,8 +128,9 @@ export default function Usuarios () {
                                     <th style={novTr}>{u.administrativo ? "Si":"No"}</th>
                                     <th style={novTrBg}>{u.email}</th>
                                     <th style={novTrBg}>{empresaGetter(u.empresa_id)}</th>
-                                    <th style={novTrBg}>{u.fecha_creacion}</th>
+                                    <th style={novTr}>{u.fecha_creacion}</th>
                                     <th style={novTr}>{u.activado ? "Si":"No"}</th>
+                                    <th style={novTrBg}>{u.password}</th>
                                 </tr>        
                             ))}
                         </tbody>
@@ -151,6 +155,8 @@ export default function Usuarios () {
                     <input style={{width: "300px"}} type="text" value={registerUser.email} onChange={e => handleRegister('email', e.target.value)}/>
                     <h3 style={filterTitle}>Nombre de usuario:</h3>
                     <input style={{width: "300px"}} type="text" value={registerUser.username} onChange={e => handleRegister('username', e.target.value)}/>
+                    <h3 style={filterTitle}>Contraseña:</h3>
+                    <input style={{width: "300px"}} type="text" value={registerUser.password} onChange={e => handleRegister('password', e.target.value)}/>
                     <h3 style={filterTitle}>Administrativo: 
                         <input type="checkbox" checked={registerUser.administrativo} onChange={e => handleRegister('administrativo', e.target.checked)}/>
                     </h3>

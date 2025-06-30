@@ -3,7 +3,7 @@ import type { IAlta, IAction, IEmpresa, INovedad, INovLeg } from "../utils/inter
 import { useParams } from "react-router";
 import Header from "./Header";
 import getUniqNovedad from "../utils/getUniqNovedad";
-import { getCategoriasNov, getEmpresas } from "../utils/getData";
+import {getCategoriasNov, getEmpresas } from "../utils/getData";
 import getNovedadesLegajo from "../utils/getNovedadesLegajo";
 import session from "../utils/session";
 import { changeState, createAltaFn, createAusenteFn, createLicenciaFn, createPersonalFn, createSancionFn, createTardanzaFn, deleteFileFn, getArchivo, postArchivo } from "../utils/createActions";
@@ -21,7 +21,6 @@ export default function NovedadDetail () {
     const [concepto, setConcepto] = useState('')
     const [file, setFile] = useState<File | null>(null)
     const [altaData, setAltaData]= useState<IAlta>({
-        legajo: 0,
         fecha_ingreso: '',
         cuit: 0,
         direccion: '',
@@ -91,6 +90,7 @@ export default function NovedadDetail () {
     },[novedad])
 
     useEffect(() => {
+
         setData({
             date_end: '',
             date_start: '',
@@ -106,6 +106,9 @@ export default function NovedadDetail () {
     }
     const filterSelect: React.CSSProperties = {
         fontSize: "large", width: "350px"
+    }
+    const filterSelectSmall: React.CSSProperties = {
+        fontSize: "large", width: "200px"
     }
     const btnRegister: React.CSSProperties = {
         color: "white", backgroundColor: "#3399ff", fontSize: "large", width: "200 px", height: "40px"
@@ -296,7 +299,7 @@ export default function NovedadDetail () {
         if(altaData.categoria.length>0 && altaData.direccion.length>0 && 
             altaData.fecha_ingreso.length>0 && altaData.lugar.length>0 &&
             altaData.nacimiento.length>0 && altaData.cuit && altaData.jornada
-            && altaData.legajo && novedad && novedad.novedad && novedad.novedad.novedad_id
+            && novedad && novedad.novedad && novedad.novedad.novedad_id
         ){
             if(confirm("Quieres realizar una nueva Alta?")) {
                 const data = altaData
@@ -304,7 +307,6 @@ export default function NovedadDetail () {
                 await createAltaFn(data)
                 alert("Alta creada")
                 setAltaData({
-                    legajo: 0,
                     fecha_ingreso: '',
                     cuit: 0,
                     direccion: '',
@@ -509,7 +511,14 @@ export default function NovedadDetail () {
                                 </tr>
                                 <tr>
                                     <th><h3 id="titulo" style={textStyle}>Jornada:</h3></th>
-                                    <th><input type="number" value={altaData.jornada} onChange={e => handleAlta("jornada",e.target.value)}/></th>
+                                    <th>
+                                        <select name="causa" id="causa-selecet" style={filterSelectSmall}
+                                        onChange={e=>handleAlta("jornada" ,e.target.value)} value={altaData.jornada}>
+                                            <option value={''}>---</option>
+                                            <option value={'Completa'}>JORNADA COMPLETA</option>
+                                            <option value={'Parcial'}>JORNADA PARCIAL</option>
+                                        </select>
+                                    </th>
                                 </tr>
                                 <tr>
                                     <th><h3 id="titulo" style={textStyle}>Categoria:</h3></th>
@@ -517,7 +526,10 @@ export default function NovedadDetail () {
                                 </tr>
                                 <tr>
                                     <th><h3 id="titulo" style={textStyle}>Lugar de Trabajo:</h3></th>
-                                    <th><input type="text" value={altaData.lugar} onChange={e => handleAlta("lugar",e.target.value)}/></th>
+                                    <th>
+                                        <textarea value={altaData.lugar} onChange={e => handleAlta('lugar',e.target.value)}
+                                        style={textAreaStyle}/>
+                                    </th>
                                 </tr>
                             </tbody>
                         </table>
@@ -775,10 +787,10 @@ export default function NovedadDetail () {
                             </tr>
                             ))}
                             {novedad?.altas.map((a) => (
-                            <tr onClick={() => handleActionData(a.legajo, a.fecha ? a.fecha : a.fecha_ingreso, `Nuevo legajo creado ${a.legajo}, CUIL ${a.cuit}, Direccion ${a.direccion}, Lugar de Trabajo ${a.lugar}`,"ALTA LEGAJO "+a.legajo, a.fecha_ingreso)}>
+                            <tr onClick={() => handleActionData(a.cuit, a.fecha ? a.fecha : a.fecha_ingreso, `Nuevo legajo creado, CUIL ${a.cuit}, Direccion ${a.direccion}, Lugar de Trabajo ${a.lugar}`,a.fecha_ingreso)}>
                                 <th style={novTr}>Alta</th>
                                 <th style={novTr}>{a.fecha}</th>
-                                <th style={novTr}>{"Alta a "+a.legajo}</th>
+                                <th style={novTr}>{"Alta a "+a.cuit}</th>
                             </tr>
                             ))}
                         </tbody>
