@@ -29,7 +29,6 @@ export default function Login () {
     useEffect(() => {
        const usrCheck = localStorage.getItem('save') 
        if(usrCheck){
-            console.log(usrCheck)
             setUsername(usrCheck)
             setSave(true)
        }
