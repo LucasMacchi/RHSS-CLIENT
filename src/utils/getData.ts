@@ -63,7 +63,6 @@ export async function getAllLegajos(empresa: string): Promise<ILegajo[]> {
                 newArr.push(l)
             }
         });
-        console.log("////////////////////////////")
         return newArr
     } catch (error) {
         console.log(error)
