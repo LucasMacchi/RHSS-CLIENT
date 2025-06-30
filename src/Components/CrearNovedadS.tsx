@@ -361,6 +361,7 @@ export default function CrearNovedadS () {
                     {categoria === "ALTA DE LEGAJO" ?
                     <div>
                         <div>
+                            <hr color='#3399ff'/>
                             <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
                                 Datos del Operario
                             </h3>
@@ -412,6 +413,7 @@ export default function CrearNovedadS () {
                                 </h4>
                                 <input type="date" value={dateIngreso} onChange={e => setDateIngreso(e.target.value)}/>
                             </div>
+                            <hr color='#3399ff'/>
                             <div style={{marginBottom: "10px"}}>
                                 <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
                                     Jornada de Trabajo
@@ -463,6 +465,7 @@ export default function CrearNovedadS () {
                                 </table>
                                 </div>
                             </div>
+                            <hr color='#3399ff'/>
                             {displayFileUpload()}
                             <div>
                                 <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}} disabled={load} 
@@ -473,6 +476,7 @@ export default function CrearNovedadS () {
                     :
                     <div>
                         <div>
+                            <hr color='#3399ff'/>
                             <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
                                 Email del Operario
                             </h3>
@@ -488,6 +492,7 @@ export default function CrearNovedadS () {
                                 <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
                             </div>
                         </div>
+                        <hr color='#3399ff'/>
                         <div>
                             <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
                                 Legajos
@@ -519,6 +524,7 @@ export default function CrearNovedadS () {
                             <textarea value={descripcion} onChange={e => setDescripcion(e.target.value)}
                             style={{width: "350px", maxWidth: "300px", height: "200px", resize: "none"}}/>
                         </div>
+                        <hr color='#3399ff'/>
                         {displayFileUpload()}
                         <div>
                             <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}} disabled={load} 
