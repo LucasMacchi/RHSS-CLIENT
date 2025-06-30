@@ -60,7 +60,7 @@ export default function CrearNovedad () {
                 }
                 setTimeout(() => {
                     setLoading(false)
-                    postNovedad(data)
+                    postNovedad(data, [])
                 }, 1500);
                 setDescripcion('')
                 setEmpresa(0)

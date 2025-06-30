@@ -150,6 +150,10 @@ export default function CrearNovedadS () {
         const username = localStorage.getItem('username')
         if(direccion.length > 0 && nacimiento.length > 0 && legajo && email.length > 0 && 
             telefono.length > 0 && jornada.length > 0 && servicioHora.length > 0 && fullname.length>0 && username) {
+            if(legajo.toString().length < 11 || legajo.toString().length > 11) {
+                alert("Ingrese un CUIL valido")
+                return 0;
+            }
             if(confirm("Quieres informar una nueva alta de legajo?")){
                 setLoading(true)
                 let des = `Datos del Operario:\n+Apellido y Nombre: ${fullname}\n+Direccion: ${direccion}\n+Fecha de Nacimiento: ${nacimiento}\n+CUIL: ${legajo}\n+Fecha de Ingreso: ${dateIngreso}\n+Jornada: ${jornada}\n+Email: ${email}\n+Telefono: ${telefono}`
@@ -256,6 +260,7 @@ export default function CrearNovedadS () {
                 <div>
                     <input type="file"  onChange={e => setFileLoad({...fileLoad, file: e.target.files ? e.target.files[0] : null})}/>
                 </div>
+                <h5 style={filterTitle} >El archivo debe tener un maximo de 10MB</h5>
                 <div>
                     <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "large", width: "120px", margin: "10px"}} 
                     onClick={() => addFile()}>Agregar</button>
@@ -397,7 +402,7 @@ export default function CrearNovedadS () {
                             </div>
                             <div style={{marginBottom: "10px"}}>
                                 <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
-                                    CUIL
+                                    CUIL - digitos {legajo.toString().length}
                                 </h4>
                                 <input type="number" value={legajo} onChange={e => setLegajo(parseInt(e.target.value))}/>
                             </div>
