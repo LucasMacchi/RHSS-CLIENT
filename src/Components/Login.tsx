@@ -58,12 +58,12 @@ export default function Login () {
                 </div>
                 <div style={{padding: "8px"}}>
                     <h2 id='subtitle' style={{fontWeight: "normal", color: "#3399ff"}}>Ingrese la contraseña</h2>
-                    <input type='password' id='username' size={20} value={password} onChange={e => setPassword(e.target.value)}
+                    <input type='password' id='password' size={20} value={password} onChange={e => setPassword(e.target.value)}
                     style={{fontSize:"x-large", color: "#3399ff"}}/>
                 </div>
                 <div style={{padding: "7px"}}>
                     <h4 id='subtitle' style={{fontWeight: "normal", color: "#3399ff"}}>Recordar usuario
-                    <input type="checkbox" id='username' checked={save} onChange={e => setSave(e.target.checked)} style={{fontSize:"x-large", color: "#3399ff"}}/>
+                    <input type="checkbox" id='remember' checked={save} onChange={e => setSave(e.target.checked)} style={{fontSize:"x-large", color: "#3399ff"}}/>
                     </h4>
                 </div>
                 <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "x-large", width: "160px"}} disabled={load} 
