@@ -54,7 +54,7 @@ export async function getLegajos(nombre: string, egressed: boolean): Promise<ILe
 
 export async function getAllLegajos(empresa: string): Promise<ILegajo[]> {
     try {
-        const res: ILegajo[] = (await axios.get(SERVER+"/data/empresa/legajos/"+empresa,{withCredentials: true})).data
+        const res: ILegajo[] = (await axios.post(SERVER+"/data/empresa/legajos",{empresa},{withCredentials: true})).data
         console.log("Legajos...")
         let newArr: ILegajo[] = []
         res.forEach(l => {
