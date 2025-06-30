@@ -188,7 +188,7 @@ export default function CrearNovedadS () {
     const createNovedad = () => {
         const username = localStorage.getItem('username')
         if(categoria.length > 0 && descripcion.length > 50 && username && legajo && 
-            legajo && email.length > 0 && telefono.length > 0
+            legajo
         ){
             if(confirm("Quieres registrar una nueva novedad")){
                 setLoading(true)
@@ -197,8 +197,8 @@ export default function CrearNovedadS () {
                     causa: descripcion,
                     legajo: legajo,
                     categoria: categoria,
-                    email: email,
-                    telefono: telefono
+                    email: email.length > 3 ? email : "NaN",
+                    telefono: telefono.length > 3 ? telefono : "NaN"
                 }
                 let filesToSend:File[] = []
                 if(files.length > 0){
@@ -478,7 +478,7 @@ export default function CrearNovedadS () {
                         <div>
                             <hr color='#3399ff'/>
                             <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                                Email del Operario
+                                Email del Operario (Opcional)
                             </h3>
                             <div style={{marginBottom: "10px"}}>
                                 <input type="text" value={email} onChange={e => setEmail(e.target.value)}/>
@@ -486,7 +486,7 @@ export default function CrearNovedadS () {
                         </div>
                         <div>
                             <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
-                                Telefono del Operario
+                                Telefono del Operario (Opcional)
                             </h3>
                             <div style={{marginBottom: "10px"}}>
                                 <input type="text" value={telefono} onChange={e => setTelefono(e.target.value)}/>
