@@ -23,18 +23,19 @@ export default function NovedadesPage () {
             <div style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
                 {novedades.map((n) => (
                     <div key={n.numero} style={{
-                        width: "500px",
+                        width: "300px",
                         backgroundColor: n.cerrado ? "crimson" : "#6495ed",
                         display: "flex",
                         justifyContent: "space-around",
                         margin: "20px",
                         borderRadius: "3px",
                         color: "white",
+                        flexDirection: "column",
                         cursor: "pointer"}}
                         onClick={() => window.location.href = '/Novedad/'+n.novedad_id}>
-                        <h3>{n.numero}</h3>
-                        <h3>{n.fecha}</h3>
-                        <h3>{n.categoria}</h3>
+                        <h3 style={{margin: "3px", textAlign: "left"}}>ID: {n.numero}<hr style={{margin: "1px"}} color="white"/></h3>
+                        <h3 style={{margin: "3px"}}>{n.categoria}</h3>
+                        <h3 style={{margin: "3px"}}>{n.fecha}</h3>
                     </div>
                 ))}
             </div>

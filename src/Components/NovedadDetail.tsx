@@ -560,7 +560,7 @@ export default function NovedadDetail () {
             case 26:
                 return (
                     <div style={{...sectionActionStyle, marginTop: "30px"}}>
-                    <h4 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Haga click en el archivo que desee eliminar.</h4>
+                    <h4 id="titulo" style={{fontWeight: "bold", color: "crimson", margin: "10px"}}>Haga click en el archivo que desee eliminar.</h4>
                     <table style={{width: "400px"}}>
                         <tbody>
                             <tr>
@@ -618,7 +618,7 @@ export default function NovedadDetail () {
     return(
         <div>
             <Header/>
-            <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Novedad - {novedad?.novedad.numero} - {novedad?.novedad.cerrado ? "Cerrado" : "Abierto"}</h1>
+            <h1 id="titulo" style={{fontWeight: "bold", color: novedad?.novedad.cerrado ? "crimson" :"#3399ff", margin: "10px"}}>Novedad - {novedad?.novedad.numero} - {novedad?.novedad.cerrado ? "Cerrado" : "Abierto"}</h1>
             <hr color='#3399ff'/>
             <div style={{display: "flex", justifyContent: "space-between"}}>
             <div style={{display: "flex", flexDirection: "column",width: "400px"}}>
@@ -741,6 +741,7 @@ export default function NovedadDetail () {
                 </div>
                 <div>
                 <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Acciones asociadas a la novedad</h2>
+                <h5 style={{margin: "5px",color:"#3399ff"}} >Para descargar un archivo, haz click en el mismo en la tabla</h5>
                 <hr color='#3399ff' style={{width: "100%"}}/>
                 </div>
                 <div style={{height: "250px", overflow: "scroll"}}>

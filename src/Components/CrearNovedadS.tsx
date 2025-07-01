@@ -252,7 +252,7 @@ export default function CrearNovedadS () {
     const displayFileUpload = () => {
         return (
             <div style={{...filterDivStyle, marginBottom: "50px", marginTop:"50px"}}>
-                <h3 style={filterTitle} >Subir Archivos</h3>
+                <h3 style={filterTitle} >Subir Archivos (Opcional)</h3>
                 <h4 style={filterTitle} >Concepto</h4>
                 <div>
                     <input type="text" value={fileLoad.concepto} onChange={e => setFileLoad({...fileLoad, concepto: e.target.value})}/>
@@ -265,6 +265,7 @@ export default function CrearNovedadS () {
                     <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "large", width: "120px", margin: "10px"}} 
                     onClick={() => addFile()}>Agregar</button>
                 </div>
+                <h5 style={{margin: "5px",color:"crimson"}} >Para eliminar un archivo cargado, haga click al mismo en la tabla</h5>
                 <div style={{display: "flex", justifyContent: "center"}}>
                     <table>
                         <tbody>
@@ -448,6 +449,7 @@ export default function CrearNovedadS () {
                                     <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "large", width: "120px", margin: "10px"}} 
                                     onClick={() => createWorkTime()}>Agregar</button>
                                 </div>
+                                <h5 style={{margin: "5px",color:"crimson"}} >Para eliminar el lugar de trabajo, haga click al mismo en la tabla</h5>
                                 <div style={{display: "flex", justifyContent: "center"}}>
                                 <table>
                                     <tbody>

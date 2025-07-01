@@ -30,7 +30,7 @@ export default function MisNovedades () {
     useEffect(() => {setNovedades([])},[numero])
 
     const filterDivStyle: React.CSSProperties = {
-     color: "#6495ed", marginLeft: "100px"
+     color: "#6495ed", marginLeft: "50px"
     }
     const filterTitle: React.CSSProperties = {
         margin: "5px"
@@ -89,18 +89,19 @@ export default function MisNovedades () {
             <div style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
                 {novedades.map((n) => (
                     <div key={n.numero} style={{
-                        width: "450px",
+                        width: "300px",
                         backgroundColor: n.cerrado ? "crimson" : "#6495ed",
                         display: "flex",
                         justifyContent: "space-around",
                         margin: "20px",
                         borderRadius: "3px",
                         color: "white",
-                        cursor: "pointer"
-                    }} onClick={() => window.location.href = '/Novedad/'+n.novedad_id}>
-                        <h3>{n.numero}</h3>
-                        <h3>{n.fecha}</h3>
-                        <h3>{n.categoria}</h3>
+                        flexDirection: "column",
+                        cursor: "pointer"}}
+                        onClick={() => window.location.href = '/Novedad/'+n.novedad_id}>
+                        <h3 style={{margin: "3px", textAlign: "left"}}>ID: {n.numero}<hr style={{margin: "1px"}} color="white"/></h3>
+                        <h3 style={{margin: "3px"}}>{n.categoria}</h3>
+                        <h3 style={{margin: "3px"}}>{n.fecha}</h3>
                     </div>
                 ))}
             </div>
@@ -131,7 +132,7 @@ export default function MisNovedades () {
                     <input type="text" value={numero} onChange={e => setNumero(e.target.value)}/>
                 </div>
                 <div style={filterDivStyle}>
-                    <h3 style={filterTitle}>Empresa</h3>
+                    <h3 style={filterTitle}>Empresa*</h3>
                     <select name="causa" id="causa-selecet" style={filterSelect} disabled={nroChecker()}
                     onChange={e=>setEmpresa(parseInt(e.target.value))} value={empresa}>
                         <option value={0}>---</option>
@@ -151,11 +152,11 @@ export default function MisNovedades () {
                     </select>
                 </div>
                 <div style={filterDivStyle}>
-                    <h3 style={filterTitle} >Fecha inicio</h3>
+                    <h3 style={filterTitle} >Fecha inicio*</h3>
                     <input type="date" value={dateStart} onChange={e => setDateStart(e.target.value)} disabled={nroChecker()}/>
                 </div>
                 <div style={filterDivStyle}>
-                    <h3 style={filterTitle} >Fecha Final</h3>
+                    <h3 style={filterTitle} >Fecha Final*</h3>
                     <input type="date" value={dateEnd} onChange={e => setDateEnd(e.target.value)} disabled={nroChecker()}/>
                 </div>
                 
