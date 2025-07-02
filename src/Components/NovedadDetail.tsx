@@ -75,11 +75,14 @@ export default function NovedadDetail () {
 
     useEffect(() => {
         session(true)
-        if(params.id) {
-            getEmpresas().then(em=>setEmpresasSele(em))
-            getUniqNovedad(parseInt(params.id)).then(n => n ? setNovedad(n) : '')
-            getCategoriasNov().then(cats=>setCategoriesSele(cats))
-        }
+        setTimeout(() => {
+            if(params.id) {
+                getEmpresas().then(em=>setEmpresasSele(em))
+                getUniqNovedad(parseInt(params.id)).then(n => n ? setNovedad(n) : '')
+                getCategoriasNov().then(cats=>setCategoriesSele(cats))
+            }
+        }, 2000);
+
     },[])
 
     useEffect(() => {
