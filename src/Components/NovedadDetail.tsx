@@ -327,7 +327,7 @@ export default function NovedadDetail () {
     }
 
     const deleteFile = async (url: string, concepto: string, id:number) => {
-        if(url && confirm("Quieres eliminar el archivo de concepto "+concepto+"?")) {
+        if(url && confirm("Quieres eliminar el archivo de concepto: "+concepto+"?")) {
             const res = await deleteFileFn(url,id)
             if(res) {
                 alert("Archivo Eliminado!")
@@ -618,6 +618,15 @@ export default function NovedadDetail () {
         }
     }
 
+    const openWhatsappChat = () => {
+        if(novedad && novedad.novedad.telefono && confirm("Quieres abrir un chat de Whatsapp con "+novedad.novedad.telefono+"?")) {
+            window.open("https://wa.me/"+novedad.novedad.telefono)
+        }
+        else {
+            alert("No se puede abrir el chat de whatsapp.")
+        }
+    }
+
     return(
         <div>
             <Header/>
@@ -670,9 +679,10 @@ export default function NovedadDetail () {
                                 <th><h3 id="titulo" style={textStyle}>Email:</h3></th>
                                 <th><h3 id="titulo" style={textStyleData}>{novedad?.novedad.email ? novedad?.novedad.email : "NaN"}</h3></th>
                             </tr>
-                            <tr >
+                            <tr style={{cursor: "pointer"}}>
                                 <th><h3 id="titulo" style={textStyle}>Telefono:</h3></th>
-                                <th><h3 id="titulo" style={textStyleData}>{novedad?.novedad.telefono ? novedad?.novedad.telefono : "NaN"}</h3></th>
+                                <th><h3 id="titulo" style={textStyleData}
+                                onClick={() => openWhatsappChat()}>{novedad?.novedad.telefono ? novedad?.novedad.telefono : "NaN"}</h3></th>
                             </tr>
                         </tbody>
                     </table>
