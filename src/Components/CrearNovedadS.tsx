@@ -371,7 +371,7 @@ export default function CrearNovedadS () {
                             {categoriasSele.map((c,i) => (
                                 i===0 || i==2 || i==6 || i==9 || i==11 || i==15|| i==17? 
                                 <>
-                                <option value={""}>---------------{sectionActionReturner(i)}-----------</option> 
+                                <option value={""}>----------{sectionActionReturner(i)}----------</option> 
                                 <option key={c} value={c}>{c}</option>
                                 </>
                                 : 
@@ -432,7 +432,7 @@ export default function CrearNovedadS () {
                             {categoriasSele.map((c,i) => (
                                 i===0 || i==2 || i==6 || i==9 || i==11 || i==15|| i==17? 
                                 <>
-                                <option value={""}>---------------{sectionActionReturner(i)}-----------</option> 
+                                <option value={""}>----------{sectionActionReturner(i)}----------</option> 
                                 <option key={c} value={c}>{c}</option>
                                 </>
                                 : 
