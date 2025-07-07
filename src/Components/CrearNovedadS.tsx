@@ -37,6 +37,7 @@ export default function CrearNovedadS () {
     const [dateIngreso, setDateIngreso] = useState('')
     const [fileLoad, setFileLoad] = useState<IFilesLoad>({concepto:'', file: null})
     const [files, setFiles] = useState<IFilesLoad[]>([])
+    const [empresaUser, setEmpresaUser] = useState("")
 
 
     useEffect(()=>{
@@ -44,7 +45,10 @@ export default function CrearNovedadS () {
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
         setTimeout(() => {
             const empresa = localStorage.getItem("empresa")
-            if(empresa !== null) getAllLegajos(empresa).then(lg=>setLegajos(lg))
+            if(empresa !== null) {
+                getAllLegajos(empresa).then(lg=>setLegajos(lg))
+                setEmpresaUser(empresa)
+            }
         }, 1500);
     },[])
 
@@ -149,7 +153,11 @@ export default function CrearNovedadS () {
     const createAltaNovedad = () => {
         const username = localStorage.getItem('username')
         if(direccion.length > 0 && nacimiento.length > 0 && legajo && email.length > 0 && 
-            telefono.length > 0 && jornada.length > 0 && servicioHora.length > 0 && fullname.length>0 && username) {
+            telefono.length > 0 && jornada.length > 0 && fullname.length>0 && username) {
+            if(empresaUser !== "Tuicha" && servicioHora.length === 0){
+                alert("Ingrese lugares de trabajo")
+                return 0;
+            }
             if(legajo.toString().length < 11 || legajo.toString().length > 11) {
                 alert("Ingrese un CUIL valido")
                 return 0;
@@ -157,10 +165,12 @@ export default function CrearNovedadS () {
             if(confirm("Quieres informar una nueva alta de legajo?")){
                 setLoading(true)
                 let des = `Datos del Operario:\n+Apellido y Nombre: ${fullname}\n+Direccion: ${direccion}\n+Fecha de Nacimiento: ${nacimiento}\n+CUIL: ${legajo}\n+Fecha de Ingreso: ${dateIngreso}\n+Jornada: ${jornada}\n+Email: ${email}\n+Telefono: ${telefono}`
-                servicioHora.forEach(s => {
+                if(empresaUser !== "Tuicha"){
+                    servicioHora.forEach(s => {
                     const str = `\n+Lugar de Trabajo: ${s.hr} horas en ${s.servicio}`
                     des += str
                 });
+                }
                 const data: INovDto = {
                     solicitante: username,
                     causa: des,
@@ -183,6 +193,16 @@ export default function CrearNovedadS () {
             }
         }
         else alert("Faltan datos del Operario")
+    }
+
+    const sectionActionReturner = (i: number) => {
+        if(i === 0) return "Sanciones"
+        else if(i === 2) return "Licencias"
+        else if(i===6) return "Despidos"
+        else if(i===9) return "Entregas"
+        else if(i===11) return "Cambios"
+        else if(i===15) return "Presentismo"
+        else if(i===17) return "Altas"
     }
 
     const createNovedad = () => {
@@ -286,6 +306,54 @@ export default function CrearNovedadS () {
         )
     }
 
+    const displayWorkHour = () => {
+        if(empresaUser !== "Tuicha") {
+            return (
+            <div style={{marginBottom: "50px"}}>
+                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                    Lugares de Trabajo y horas
+                </h4>
+                <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                    Buscar servicio por nombre
+                </h5>
+                <input type="text" value={legajosS} onChange={e => setLegajosS(e.target.value)}/>
+                <h6 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
+                    {serviciosF.length} - Encontrados
+                </h6>
+                <select name="causa" id="causa-selecet" style={filterSelect}
+                onChange={e=>handleService(e.target.value,'servicio')} value={uniqServHr.servicio}>
+                    <option value={0}>---</option>
+                    {serviciosF.map((s) => (
+                        <option key={s.service_id} value={s.service_des}>{s.service_des}</option>
+                    ))}
+                </select>
+                <input style={{width: "50px"}} type="number" min={0} max={8} value={uniqServHr.hr} onChange={e => handleService(parseInt(e.target.value),"hr")}/>
+                <div>
+                    <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "large", width: "120px", margin: "10px"}} 
+                    onClick={() => createWorkTime()}>Agregar</button>
+                </div>
+                <h5 style={{margin: "5px",color:"crimson"}} >Para eliminar el lugar de trabajo, haga click al mismo en la tabla</h5>
+                <div style={{display: "flex", justifyContent: "center"}}>
+                <table>
+                    <tbody>
+                        <tr>
+                            <th style={novTr}>Servicio</th>
+                            <th style={novTr}>Horas</th>
+                        </tr>
+                        {servicioHora.map((s, i) => (
+                            <tr onClick={() => deleteWorkTime(i)}>
+                                <th style={novTr}>{s.servicio}</th>
+                                <th style={novTr}>{s.hr}</th>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            )
+        }
+    }
+
     const displayCreateNov = () => {
         if(show){
             return (
@@ -300,7 +368,13 @@ export default function CrearNovedadS () {
                         <select name="causa" id="causa-selecet" style={filterSelect}
                         onChange={e=>setCategoria(e.target.value)} value={categoria}>
                             <option value={''}>---</option>
-                            {categoriasSele.map((c) => (
+                            {categoriasSele.map((c,i) => (
+                                i===0 || i==2 || i==6 || i==9 || i==11 || i==15|| i==17? 
+                                <>
+                                <option value={""}>---------------{sectionActionReturner(i)}-----------</option> 
+                                <option key={c} value={c}>{c}</option>
+                                </>
+                                : 
                                 <option key={c} value={c}>{c}</option>
                             ))}
                         </select>
@@ -346,6 +420,7 @@ export default function CrearNovedadS () {
                     <h1 id="titulo" style={{fontWeight: "bold", color: "#3399ff"}} >
                         Crear Novedad
                     </h1>
+                    <h4 style={{fontWeight: "bold", color: "#3399ff"}}>Empresa: {empresaUser}</h4>
                     <hr color='#3399ff'/>
                     <div>
                         <h3 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
@@ -354,9 +429,15 @@ export default function CrearNovedadS () {
                             <select name="causa" id="causa-selecet" style={filterSelect}
                             onChange={e=>setCategoria(e.target.value)} value={categoria}>
                                 <option value={''}>---</option>
-                                {categoriasSele.map((c) => (
-                                    <option key={c} value={c}>{c}</option>
-                                ))}
+                            {categoriasSele.map((c,i) => (
+                                i===0 || i==2 || i==6 || i==9 || i==11 || i==15|| i==17? 
+                                <>
+                                <option value={""}>---------------{sectionActionReturner(i)}-----------</option> 
+                                <option key={c} value={c}>{c}</option>
+                                </>
+                                : 
+                                <option key={c} value={c}>{c}</option>
+                            ))}
                             </select>
                     </div>
                     {categoria === "ALTA DE LEGAJO" ?
@@ -426,47 +507,7 @@ export default function CrearNovedadS () {
                                     <option value={'Parcial'}>JORNADA PARCIAL</option>
                                 </select>
                             </div>
-                            <div style={{marginBottom: "50px"}}>
-                                <h4 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
-                                    Lugares de Trabajo y horas
-                                </h4>
-                                <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
-                                    Buscar servicio por nombre
-                                </h5>
-                                <input type="text" value={legajosS} onChange={e => setLegajosS(e.target.value)}/>
-                                <h6 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff", margin:"5px"}}>
-                                    {serviciosF.length} - Encontrados
-                                </h6>
-                                <select name="causa" id="causa-selecet" style={filterSelect}
-                                onChange={e=>handleService(e.target.value,'servicio')} value={uniqServHr.servicio}>
-                                    <option value={0}>---</option>
-                                    {serviciosF.map((s) => (
-                                        <option key={s.service_id} value={s.service_des}>{s.service_des}</option>
-                                    ))}
-                                </select>
-                                <input style={{width: "50px"}} type="number" min={0} max={8} value={uniqServHr.hr} onChange={e => handleService(parseInt(e.target.value),"hr")}/>
-                                <div>
-                                    <button id="bg-btn" style={{color: "white", backgroundColor: "#3399ff", fontSize: "large", width: "120px", margin: "10px"}} 
-                                    onClick={() => createWorkTime()}>Agregar</button>
-                                </div>
-                                <h5 style={{margin: "5px",color:"crimson"}} >Para eliminar el lugar de trabajo, haga click al mismo en la tabla</h5>
-                                <div style={{display: "flex", justifyContent: "center"}}>
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <th style={novTr}>Servicio</th>
-                                            <th style={novTr}>Horas</th>
-                                        </tr>
-                                        {servicioHora.map((s, i) => (
-                                            <tr onClick={() => deleteWorkTime(i)}>
-                                                <th style={novTr}>{s.servicio}</th>
-                                                <th style={novTr}>{s.hr}</th>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                </div>
-                            </div>
+                            {displayWorkHour()}
                             <hr color='#3399ff'/>
                             {displayFileUpload()}
                             <div>

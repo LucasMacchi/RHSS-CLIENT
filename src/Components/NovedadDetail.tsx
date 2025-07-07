@@ -61,10 +61,13 @@ export default function NovedadDetail () {
         overflowWrap: 'break-word'
     }
     const sectionStyle: React.CSSProperties = {
-        maxHeight: "380px",
+        maxHeight: "700px",
         display: "inline-block",
         marginLeft: "10px",
-        height: "100%"
+        height: "100%",
+        borderColor: "#3399ff",
+        border: "1px solid",
+        width: "450px"
     }
     const sectionActionStyle: React.CSSProperties = {
         maxHeight: "326px",
@@ -108,7 +111,7 @@ export default function NovedadDetail () {
         border: "1px solid"
     }
     const filterSelect: React.CSSProperties = {
-        fontSize: "large", width: "350px"
+        fontSize: "large", width: "350px",border: "1px solid"
     }
     const filterSelectSmall: React.CSSProperties = {
         fontSize: "large", width: "200px"
@@ -627,6 +630,16 @@ export default function NovedadDetail () {
         }
     }
 
+    const sectionActionReturner = (i: number) => {
+        if(i === 0) return "Sanciones"
+        else if(i === 2) return "Licencias"
+        else if(i===6) return "Despidos"
+        else if(i===9) return "Entregas"
+        else if(i===11) return "Cambios"
+        else if(i===15) return "Presentismo"
+        else if(i===17) return "Altas"
+    }
+
     return(
         <div>
             <Header/>
@@ -660,7 +673,7 @@ export default function NovedadDetail () {
                     <table >
                         <tbody>
                             <tr >
-                                <th><h3 style={textStyle}>Nombre completo:</h3></th>
+                                <th><h3 style={textStyle}>Nom-Ap:</h3></th>
                                 <th><h3 style={textStyleData}>{novedad?.legajo.fullname}</h3></th>
                             </tr>
                             <tr >
@@ -702,7 +715,7 @@ export default function NovedadDetail () {
                     <h3 id="titulo" style={textStyle}>Causa:</h3>
                     <div style={{textAlign: "start", width: "400px"}}>
                         {novedad?.novedad.causa.split('+').map((p) => (
-                            <p id="titulo" style={parrafoStyle}>{p}</p>
+                            <p id="titulo" style={parrafoStyle}>{p.split(":")[0]}: <a style={{...parrafoStyle, color: "black", fontWeight: "bold"}}>{p.split(":")[1]}</a></p>
                         ))}
                     </div>
                 </div>
@@ -714,102 +727,115 @@ export default function NovedadDetail () {
                 onChange={e=>setCategoria(parseInt(e.target.value))} value={categoria}>
                     <option value={0}>---</option>
                     {categoriasSele.map((c,i) => (
-                        <option key={c} value={(i+1)}>{c}</option>
+                        i===0 || i==2 || i==6 || i==9 || i==11 || i==15|| i==17? 
+                        <>
+                        <option value={0}>---------------{sectionActionReturner(i)}-----------</option> 
+                        <option style={{border: "1px solid"}} key={c} value={(i+1)}>{c}</option>
+                        </>
+                        : 
+                        <option style={{border: "1px solid"}} key={c} value={(i+1)}>{c}</option>
                     ))}
+                    <option value={0}>---------------{"Archivos"}-----------</option>
                     <option value={25}>SUBIR ARCHIVO</option>
                     <option value={26}>ELIMINAR ARCHIVO</option>
+                    <option value={0}>---------------{"Novedad"}-----------</option>
                     <option value={27}>{novedad?.novedad.cerrado ? "REABRIR NOVEDAD" : "CERRAR NOVEDAD"}</option>
                 </select>
                 {displayForms()}
                 {displayAction()}
             </div>
             <div style={{display: "flex", flexDirection: "column",width: "620px", marginRight: "5px"}}>
-                <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Historial del Legajo</h2>
-                <hr color='#3399ff' style={{width: "100%"}}/>
-                <div style={{height: "350px", overflow: "scroll"}}>
-                {novedadesLeg ? 
-                    <table style={{width: "600px"}}>
-                        <tbody>
-                            <tr>
-                                <th style={novTr}>Nro Novedad</th>
-                                <th style={novTr}>Categoria</th>
-                                <th style={novTr}>Fecha</th>
-                                <th style={novTr}>Solicitante</th>
-                            </tr>
-                            {novedadesLeg.map((n) => (
-                            <tr onClick={() => window.location.href = '/Novedad/'+n.novedad_id} 
-                            style={{backgroundColor: novedad?.novedad.novedad_id === n.novedad_id ? "#3399ff" : "white"}}>
-                                <th style={novTr}>{n.numero}</th>
-                                <th style={novTr}>{n.categoria}</th>
-                                <th style={novTr}>{n.fecha}</th>
-                                <th style={novTr}>{n.solicitante}</th>
-                            </tr>
-                            ))}
+                <div style={{border: "1px solid"}}>
+                    <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Historial del Legajo</h2>
+                    <hr color='#3399ff' style={{width: "100%"}}/>
+                    <div style={{height: "350px", overflow: "scroll"}}>
+                    {novedadesLeg ? 
+                        <table style={{width: "600px"}}>
+                            <tbody>
+                                <tr>
+                                    <th style={novTr}>Nro Novedad</th>
+                                    <th style={novTr}>Categoria</th>
+                                    <th style={novTr}>Fecha</th>
+                                    <th style={novTr}>Solicitante</th>
+                                </tr>
+                                {novedadesLeg.map((n) => (
+                                <tr onClick={() => window.location.href = '/Novedad/'+n.novedad_id} 
+                                style={{backgroundColor: novedad?.novedad.novedad_id === n.novedad_id ? "#3399ff" : "white"}}>
+                                    <th style={novTr}>{n.numero}</th>
+                                    <th style={novTr}>{n.categoria}</th>
+                                    <th style={novTr}>{n.fecha}</th>
+                                    <th style={novTr}>{n.solicitante}</th>
+                                </tr>
+                                ))}
 
-                        </tbody>
-                    </table>
-                    : 
-                    <h3 style={{fontWeight: "bold", color: "#3399ff", marginTop:"15px"}}>El legajo no tiene novedades</h3>
-                    }
+                            </tbody>
+                        </table>
+                        : 
+                        <h3 style={{fontWeight: "bold", color: "#3399ff", marginTop:"15px"}}>El legajo no tiene novedades</h3>
+                        }
+                    </div>
                 </div>
-                <div>
-                <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Acciones asociadas a la novedad</h2>
-                <h5 style={{margin: "5px",color:"#3399ff"}} >Para descargar un archivo, haz click en el mismo en la tabla</h5>
-                <hr color='#3399ff' style={{width: "100%"}}/>
+                <div style={{border: "1px solid"}}>
+                    <div>
+                        <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Acciones asociadas a la novedad</h2>
+                        <h5 style={{margin: "5px",color:"#3399ff"}} >Para descargar un archivo, haz click en el mismo en la tabla</h5>
+                        <hr color='#3399ff' style={{width: "100%"}}/>
+                    </div>
+                    <div style={{height: "250px", overflow: "scroll"}}>
+                        <table style={{width: "600px"}}>
+                            <tbody>
+                                <tr>
+                                    <th style={novTr}>Tipo</th>
+                                    <th style={novTr}>Fecha</th>
+                                    <th style={novTr}>Categoria/Concepto</th>
+                                </tr>
+                                {novedad?.ausentes.map((n) => (
+                                <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.categoria, n.fecha_ausentada)}>
+                                    <th style={novTr}>{n.categoria}</th>
+                                    <th style={novTr}>{n.fecha}</th>
+                                    <th style={novTr}>{n.justificado ? "Justificado" : "No Justificado"}</th>
+                                </tr>
+                                ))}
+                                {novedad?.licencias.map((n) => (
+                                <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.categoria, n.fecha_salida, n.fecha_entrada)}>
+                                    <th style={novTr}>Licencia</th>
+                                    <th style={novTr}>{n.fecha}</th>
+                                    <th style={novTr}>{n.categoria}</th>
+                                </tr>
+                                ))}
+                                {novedad?.personal.map((n) => (
+                                <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.categoria, n.fecha_ocurrido)}>
+                                    <th style={novTr}>Personal</th>
+                                    <th style={novTr}>{n.fecha}</th>
+                                    <th style={novTr}>{n.categoria}</th>
+                                </tr>
+                                ))}
+                                {novedad?.sanciones.map((n) => (
+                                <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.tipo, n.fecha_inicio, n.fecha_final)}>
+                                    <th style={novTr}>Sancion</th>
+                                    <th style={novTr}>{n.fecha}</th>
+                                    <th style={novTr}>{n.tipo}</th>
+                                </tr>
+                                ))}
+                                {novedad?.archivos.map((a) => (
+                                <tr onClick={() => downloadFile(a.ruta)}>
+                                    <th style={novTr}>Archivo</th>
+                                    <th style={novTr}>{a.fecha}</th>
+                                    <th style={novTr}>{a.concepto}</th>
+                                </tr>
+                                ))}
+                                {novedad?.altas.map((a) => (
+                                <tr onClick={() => handleActionData(a.cuit, a.fecha ? a.fecha : a.fecha_ingreso, `Nuevo legajo creado, CUIL ${a.cuit}, Direccion ${a.direccion}, Lugar de Trabajo ${a.lugar}`,a.fecha_ingreso)}>
+                                    <th style={novTr}>Alta</th>
+                                    <th style={novTr}>{a.fecha}</th>
+                                    <th style={novTr}>{"Alta a "+a.cuit}</th>
+                                </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div style={{height: "250px", overflow: "scroll"}}>
-                    <table style={{width: "600px"}}>
-                        <tbody>
-                            <tr>
-                                <th style={novTr}>Tipo</th>
-                                <th style={novTr}>Fecha</th>
-                                <th style={novTr}>Categoria/Concepto</th>
-                            </tr>
-                            {novedad?.ausentes.map((n) => (
-                            <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.categoria, n.fecha_ausentada)}>
-                                <th style={novTr}>{n.categoria}</th>
-                                <th style={novTr}>{n.fecha}</th>
-                                <th style={novTr}>{n.justificado ? "Justificado" : "No Justificado"}</th>
-                            </tr>
-                            ))}
-                            {novedad?.licencias.map((n) => (
-                            <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.categoria, n.fecha_salida, n.fecha_entrada)}>
-                                <th style={novTr}>Licencia</th>
-                                <th style={novTr}>{n.fecha}</th>
-                                <th style={novTr}>{n.categoria}</th>
-                            </tr>
-                            ))}
-                            {novedad?.personal.map((n) => (
-                            <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.categoria, n.fecha_ocurrido)}>
-                                <th style={novTr}>Personal</th>
-                                <th style={novTr}>{n.fecha}</th>
-                                <th style={novTr}>{n.categoria}</th>
-                            </tr>
-                            ))}
-                            {novedad?.sanciones.map((n) => (
-                            <tr onClick={() => handleActionData(n.legajo, n.fecha, n.causa, n.tipo, n.fecha_inicio, n.fecha_final)}>
-                                <th style={novTr}>Sancion</th>
-                                <th style={novTr}>{n.fecha}</th>
-                                <th style={novTr}>{n.tipo}</th>
-                            </tr>
-                            ))}
-                            {novedad?.archivos.map((a) => (
-                            <tr onClick={() => downloadFile(a.ruta)}>
-                                <th style={novTr}>Archivo</th>
-                                <th style={novTr}>{a.fecha}</th>
-                                <th style={novTr}>{a.concepto}</th>
-                            </tr>
-                            ))}
-                            {novedad?.altas.map((a) => (
-                            <tr onClick={() => handleActionData(a.cuit, a.fecha ? a.fecha : a.fecha_ingreso, `Nuevo legajo creado, CUIL ${a.cuit}, Direccion ${a.direccion}, Lugar de Trabajo ${a.lugar}`,a.fecha_ingreso)}>
-                                <th style={novTr}>Alta</th>
-                                <th style={novTr}>{a.fecha}</th>
-                                <th style={novTr}>{"Alta a "+a.cuit}</th>
-                            </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+
             </div>
             </div>
         </div>
