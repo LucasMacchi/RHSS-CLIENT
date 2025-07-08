@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import Header from "./Header"
 import session from "../utils/session"
 import type { IEmpresa, ILegajo, INovDto } from "../utils/interfaces"
-import { getCategoriasNov, getEmpresas, getAllLegajos } from "../utils/getData"
+import { getCategoriasNov, getEmpresas, getAllLegajos, getAllLegajosNoEmp } from "../utils/getData"
 import postNovedad from "../utils/postNovedad"
 
 
@@ -28,12 +28,14 @@ export default function CrearNovedad () {
 
     useEffect(()=>{
         session(true)
+        const empresa = localStorage.getItem("empresa")
         getEmpresas().then(em=>setEmpresasSele(em))
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
-        setTimeout(() => {
-            const empresa = localStorage.getItem("empresa")
-            if(empresa !== null) getAllLegajos(empresa).then(lg=>setLegajos(lg))
-        }, 1500);
+        if(empresa !== null && empresa === "Tuicha") {getAllLegajos(empresa).then(lg=>setLegajos(lg))}
+        else {
+            getAllLegajosNoEmp().then(lg=>setLegajos(lg))
+        }
+
     },[])
 
     useEffect(() => {
@@ -198,8 +200,8 @@ export default function CrearNovedad () {
                         <select name="causa" id="causa-selecet" style={filterSelect}
                         onChange={e=>setLegajo(parseInt(e.target.value))} value={legajo}>
                             <option value={0}>---</option>
-                            {legajosF.map((e) => (
-                                <option key={e.legajo} value={e.legajo}>{e.legajo+'-'+e.fullname}</option>
+                            {legajosF.map((e,i) => (
+                                <option key={e.legajo+i+e.cuil} value={e.legajo}>{e.legajo+'-'+e.fullname}</option>
                             ))}
                         </select>
                 </div>
