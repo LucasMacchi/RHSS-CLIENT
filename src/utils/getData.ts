@@ -70,6 +70,17 @@ export async function getAllLegajos(empresa: string): Promise<ILegajo[]> {
     }
 }
 
+export async function getAllLegajosNoEmp(): Promise<ILegajo[]> {
+    try {
+        const res: ILegajo[] = (await axios.get(SERVER+"/data/all/legajos",{withCredentials: true})).data
+        console.log("Legajos...",res)
+        return res
+    } catch (error) {
+        console.log(error)
+        return []
+    }
+}
+
 export async function getAllCcos(): Promise<IServicio[]> {
     try {
         const res: IServicio[] = (await axios.get(SERVER2+'/data/cco')).data
