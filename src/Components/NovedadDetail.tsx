@@ -667,7 +667,7 @@ export default function NovedadDetail () {
                         </tbody>
                     </table>
                 </div>
-                <div style={sectionStyle}>
+                <div style={{...sectionStyle, display: novedad?.novedad.categoria === "ALTA DE LEGAJO" ? "none": "block"}}>
                     <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Datos del Operario</h2>
                     <hr color='#3399ff'/>
                     <table >
@@ -702,7 +702,7 @@ export default function NovedadDetail () {
 
                 </div>
                 <div style={sectionStyle}>
-                    <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Causa de la Novedad</h2>
+                    <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>{novedad?.novedad.categoria === "ALTA DE LEGAJO" ? "Datos del nuevo operario" : "Categoria y causa de la Novedad"}</h2>
                     <hr color='#3399ff'/>
                     <table >
                         <tbody>
@@ -712,7 +712,7 @@ export default function NovedadDetail () {
                             </tr>
                         </tbody>
                     </table>
-                    <h3 id="titulo" style={textStyle}>Causa:</h3>
+                    <h3 id="titulo" style={textStyle}>{novedad?.novedad.categoria === "ALTA DE LEGAJO" ? "Datos" : "Causa: "}</h3>
                     <div style={{textAlign: "start", width: "400px"}}>
                         {novedad?.novedad.causa.split('+').map((p) => (
                             <p id="titulo" style={parrafoStyle}>{p.split(":")[0]}: <a style={{...parrafoStyle, color: "black", fontWeight: "bold"}}>{p.split(":")[1]}</a></p>
