@@ -622,8 +622,11 @@ export default function NovedadDetail () {
     }
 
     const openWhatsappChat = () => {
+        
         if(novedad && novedad.novedad.telefono && confirm("Quieres abrir un chat de Whatsapp con "+novedad.novedad.telefono+"?")) {
-            window.open("https://wa.me/"+novedad.novedad.telefono)
+            let nro = novedad.novedad.telefono.replace(" ","")
+            nro = nro.replace("-","")
+            window.open("https://wa.me/"+nro)
         }
         else {
             alert("No se puede abrir el chat de whatsapp.")
