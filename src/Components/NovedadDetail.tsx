@@ -67,7 +67,7 @@ export default function NovedadDetail () {
         height: "100%",
         borderColor: "#3399ff",
         border: "1px solid",
-        width: "450px"
+        width: "380px"
     }
     const sectionActionStyle: React.CSSProperties = {
         maxHeight: "326px",
@@ -744,13 +744,13 @@ export default function NovedadDetail () {
                 {displayForms()}
                 {displayAction()}
             </div>
-            <div style={{display: "flex", flexDirection: "column",width: "620px", marginRight: "5px"}}>
+            <div style={{display: "flex", flexDirection: "column",width: "500px", marginRight: "5px"}}>
                 <div style={{border: "1px solid"}}>
                     <h2 id="titulo" style={{fontWeight: "bold", color: "#3399ff", margin: "10px"}}>Historial del Legajo</h2>
                     <hr color='#3399ff' style={{width: "100%"}}/>
                     <div style={{height: "350px", overflow: "scroll"}}>
                     {novedadesLeg ? 
-                        <table style={{width: "600px"}}>
+                        <table style={{width: "480px"}}>
                             <tbody>
                                 <tr>
                                     <th style={novTr}>Nro Novedad</th>
@@ -782,7 +782,7 @@ export default function NovedadDetail () {
                         <hr color='#3399ff' style={{width: "100%"}}/>
                     </div>
                     <div style={{height: "250px", overflow: "scroll"}}>
-                        <table style={{width: "600px"}}>
+                        <table style={{width: "480px"}}>
                             <tbody>
                                 <tr>
                                     <th style={novTr}>Tipo</th>
@@ -825,7 +825,7 @@ export default function NovedadDetail () {
                                 </tr>
                                 ))}
                                 {novedad?.altas.map((a) => (
-                                <tr onClick={() => handleActionData(a.cuit, a.fecha ? a.fecha : a.fecha_ingreso, `Nuevo legajo creado, CUIL ${a.cuit}, Direccion ${a.direccion}, Lugar de Trabajo ${a.lugar}`,a.fecha_ingreso)}>
+                                <tr onClick={() => handleActionData(a.cuit,a.fecha ? a.fecha : "NaN", `Nuevo legajo creado, CUIL ${a.cuit}, Direccion ${a.direccion}, Lugar de Trabajo ${a.lugar}, Categoria ${a.categoria}`,"Alta de Legajo",a.fecha_ingreso)}>
                                     <th style={novTr}>Alta</th>
                                     <th style={novTr}>{a.fecha}</th>
                                     <th style={novTr}>{"Alta a "+a.cuit}</th>
