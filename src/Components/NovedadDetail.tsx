@@ -643,6 +643,15 @@ export default function NovedadDetail () {
         else if(i===17) return "Altas"
     }
 
+    const descriptionResalted = (legajo: boolean, des: string) => {
+        if(legajo) {
+            return <>{des.split(":")[0]}: <a style={{...parrafoStyle, color: "black", fontWeight: "bold"}}>{des.split(":")[1]}</a></>
+        }  
+        else{
+            return des
+        }
+    }
+
     return(
         <div>
             <Header/>
@@ -718,7 +727,7 @@ export default function NovedadDetail () {
                     <h3 id="titulo" style={textStyle}>{novedad?.novedad.categoria === "ALTA DE LEGAJO" ? "Datos" : "Causa: "}</h3>
                     <div style={{textAlign: "start", width: "400px"}}>
                         {novedad?.novedad.causa.split('+').map((p) => (
-                            <p id="titulo" style={parrafoStyle}>{p.split(":")[0]}: <a style={{...parrafoStyle, color: "black", fontWeight: "bold"}}>{p.split(":")[1]}</a></p>
+                            <p id="titulo" style={parrafoStyle}>{descriptionResalted(novedad.novedad.categoria === "ALTA DE LEGAJO" ? true : false,p)}</p>
                         ))}
                     </div>
                 </div>
