@@ -113,7 +113,7 @@ export default function Legajos () {
                             backgroundColor: "#6495ed",
                             display: "flex",
                             justifyContent: "space-between",
-                            margin: "20px",
+                            margin: "10px",
                             borderRadius: "3px",
                             color: "white",
                             cursor: "pointer",
@@ -125,7 +125,7 @@ export default function Legajos () {
                                         <th style={legajoTr}>{lg.legajo}</th>
                                         <th style={legajoTr}>{lg.fullname}</th>
                                         <th style={legajoTr}>{lg.cuil}</th>
-                                        <th style={legajoTr}>{lg.sector}</th>
+                                        <th style={legajoTr}>{lg.empresa}</th>
                                     </tr>
                                 </tbody>
                             </table>
