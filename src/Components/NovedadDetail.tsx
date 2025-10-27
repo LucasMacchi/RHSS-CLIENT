@@ -389,6 +389,7 @@ export default function NovedadDetail () {
             case 3:
             case 4:
             case 5:
+            case 20:
             case 6:
                 return(
                     <div style={sectionActionStyle}>
@@ -422,6 +423,7 @@ export default function NovedadDetail () {
             case 12:
             case 13:
             case 14:
+            case 19:
             case 15:
                 return(
                     <div style={sectionActionStyle}>
@@ -633,6 +635,7 @@ export default function NovedadDetail () {
         }
     }
 
+    /*
     const sectionActionReturner = (i: number) => {
         if(i === 0) return "Sanciones"
         else if(i === 2) return "Licencias"
@@ -641,7 +644,7 @@ export default function NovedadDetail () {
         else if(i===11) return "Cambios"
         else if(i===15) return "Presentismo"
         else if(i===17) return "Altas"
-    }
+    }*/
 
     const descriptionResalted = (legajo: boolean, des: string) => {
         if(legajo) {
@@ -739,12 +742,6 @@ export default function NovedadDetail () {
                 onChange={e=>setCategoria(parseInt(e.target.value))} value={categoria}>
                     <option value={0}>---</option>
                     {categoriasSele.map((c,i) => (
-                        i===0 || i==2 || i==6 || i==9 || i==11 || i==15|| i==17? 
-                        <>
-                        <option value={0}>---------------{sectionActionReturner(i)}-----------</option> 
-                        <option style={{border: "1px solid"}} key={c} value={(i+1)}>{c}</option>
-                        </>
-                        : 
                         <option style={{border: "1px solid"}} key={c} value={(i+1)}>{c}</option>
                     ))}
                     <option value={0}>---------------{"Archivos"}-----------</option>
