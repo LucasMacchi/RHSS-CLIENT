@@ -391,6 +391,7 @@ export default function NovedadDetail () {
             case 5:
             case 20:
             case 6:
+            case 29:
                 return(
                     <div style={sectionActionStyle}>
                         <h3 id="titulo" style={textStyle}>Fecha de salida: 
