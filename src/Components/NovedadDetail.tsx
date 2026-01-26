@@ -6,7 +6,7 @@ import getUniqNovedad from "../utils/getUniqNovedad";
 import {getCategoriasNov, getEmpresas } from "../utils/getData";
 import getNovedadesLegajo from "../utils/getNovedadesLegajo";
 import session from "../utils/session";
-import { changeState, createAltaFn, createAusenteFn, createLicenciaFn, createPersonalFn, createSancionFn, createTardanzaFn, deleteFileFn, getArchivo, postArchivo } from "../utils/createActions";
+import { changeState, createAltaFn, createAusenteFn, createLicenciaFn, createMedAusenteFn, createPersonalFn, createSancionFn, createTardanzaFn, deleteFileFn, getArchivo, postArchivo } from "../utils/createActions";
 
 
 export default function NovedadDetail () {
@@ -172,10 +172,21 @@ export default function NovedadDetail () {
                 justificado: dataCheck,
                 legajo: novedad.legajo.legajo,
                 novedad_id: novedad.novedad.novedad_id,
-                causa: data.causa
+                causa: data.causa,
+                isMed: false
             }
-            if(categoria !== 17){
+            if(categoria === 16){
                 const res = await createAusenteFn(ausente)
+                if(res) {
+                    alert("Ausente creado.")
+                    window.location.reload()
+                    setData({date_end: '',date_start: '',causa: ''})
+                }
+                else alert("Error al crear ausente.")
+            }
+            else if(categoria === 23){
+                ausente.isMed = true
+                const res = await createMedAusenteFn(ausente)
                 if(res) {
                     alert("Ausente creado.")
                     window.location.reload()
@@ -389,9 +400,11 @@ export default function NovedadDetail () {
             case 3:
             case 4:
             case 5:
-            case 20:
             case 6:
             case 29:
+            case 20:
+            case 21:
+            case 22:
                 return(
                     <div style={sectionActionStyle}>
                         <h3 id="titulo" style={textStyle}>Fecha de salida: 
@@ -448,6 +461,7 @@ export default function NovedadDetail () {
                     </div>
                 )
             case 16:
+            case 23:
                 return(
                     <div style={sectionActionStyle}>
                         <h3 id="titulo" style={textStyle}>Fecha: 

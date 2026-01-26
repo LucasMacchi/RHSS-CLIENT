@@ -85,6 +85,7 @@ export default function MisNovedades () {
 
         const novedadesDisplay = () => {
         if(novedades.length > 0 ) {
+            console.log(novedades[0])
             return (
             <div style={{display: "flex", flexWrap: "wrap", justifyContent: "center"}}>
                 {novedades.map((n) => (
@@ -101,7 +102,7 @@ export default function MisNovedades () {
                         onClick={() => window.location.href = '/Novedad/'+n.novedad_id}>
                         <h3 style={{margin: "3px", textAlign: "left"}}>ID: {n.numero}<hr style={{margin: "1px"}} color="white"/></h3>
                         <h3 style={{margin: "3px"}}>{n.categoria}</h3>
-                        {n.categoria === "ALTA DE LEGAJO" && <h3 style={{margin: "3px"}}>{n.causa.split(":")[2].split("+")[0]}</h3>}
+                        {n.categoria === "ALTA DE LEGAJO" ? <h3 style={{margin: "3px"}}>{n.causa.split(":")[2].split("+")[0]}</h3> : <h3 style={{margin: "3px"}}>{n.personal}</h3>}
                         <h3 style={{margin: "3px"}}>{n.fecha}</h3>
                     </div>
                 ))}
