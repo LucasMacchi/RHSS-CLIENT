@@ -17,7 +17,8 @@ export interface INovedad {
     categoria: string,
     cerrado: boolean,
     email: string,
-    telefono: string
+    telefono: string,
+    personal: string
 }
 
 export interface INovFilter {

@@ -6,7 +6,8 @@ interface IAusenteDto {
     fecha_ausente: string,
     justificado: boolean,
     novedad_id: number,
-    legajo: number
+    legajo: number,
+    isMed:boolean
 }
 interface ISancionDto {
     causa: string,
@@ -54,6 +55,17 @@ export async function createAusenteFn (data: IAusenteDto): Promise<boolean> {
     console.log("Creando Ausente...")
     try {
         await axios.post(SERVER+"/ausente/create",data,{withCredentials: true})
+        return true
+    } catch (error) {
+        console.log(error)
+        return false
+    }
+}
+
+export async function createMedAusenteFn (data: IAusenteDto): Promise<boolean> {
+    console.log("Creando Ausente...")
+    try {
+        await axios.post(SERVER+"/ausente/med/create",data,{withCredentials: true})
         return true
     } catch (error) {
         console.log(error)
