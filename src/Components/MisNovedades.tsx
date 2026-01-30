@@ -1,6 +1,6 @@
 import { useState,useEffect } from "react";
 import Header from "./Header";
-import type { IEmpresa, INovedad, INovFilter } from "../utils/interfaces";
+import type { ICategoria, IEmpresa, INovedad, INovFilter } from "../utils/interfaces";
 import getNovedades from "../utils/getNovedades";
 import { getCategoriasNov, getEmpresas } from "../utils/getData";
 
@@ -18,7 +18,7 @@ export default function MisNovedades () {
     const [dateEnd, setDateEnd] = useState('')
     const [load, setLoading] = useState(false)
     const [empresasSele, setEmpresasSele] = useState<IEmpresa[]>([])
-    const [categoriasSele, setCategoriesSele] = useState<string[]>([])
+    const [categoriasSele, setCategoriesSele] = useState<ICategoria[]>([])
     
     
     useEffect(() => {
@@ -149,7 +149,7 @@ export default function MisNovedades () {
                     onChange={e=>setCategoria(e.target.value)} value={categoria}>
                         <option value={''}>---</option>
                         {categoriasSele.map((c) => (
-                            <option key={c} value={c}>{c}</option>
+                            <option key={c.categoria_id} value={c.descripcion}>{c.descripcion}</option>
                         ))}
                     </select>
                 </div>

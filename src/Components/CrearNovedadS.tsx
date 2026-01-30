@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import Header from "./Header"
 import session from "../utils/session"
-import type {IFilesLoad, ILegajo, INovDto, INovedad, INovFilter, IServicio, IServicioHora } from "../utils/interfaces"
+import type {ICategoria, IFilesLoad, ILegajo, INovDto, INovedad, INovFilter, IServicio, IServicioHora } from "../utils/interfaces"
 import { getAllCcos, getAllLegajos, getCategoriasNov } from "../utils/getData"
 import postNovedad from "../utils/postNovedad"
 import logoutFn from "../utils/logoutFn"
@@ -10,7 +10,7 @@ import getNovedadesSup from "../utils/getNovedadesSup"
 export default function CrearNovedadS () {
     
     const [categoria, setCategoria] = useState('')
-    const [categoriasSele, setCategoriesSele] = useState<string[]>([])
+    const [categoriasSele, setCategoriesSele] = useState<ICategoria[]>([])
     const [novedades, setNovedades] = useState<INovedad[]>([])
     const [legajos, setLegajos] = useState<ILegajo[]>([])
     const [legajosF, setLegajosF] = useState<ILegajo[]>([])
@@ -195,16 +195,6 @@ export default function CrearNovedadS () {
         else alert("Faltan datos del Operario")
     }
 
-    const sectionActionReturner = (i: number) => {
-        if(i === 0) return "Sanciones"
-        else if(i === 2) return "Licencias"
-        else if(i===6) return "Despidos"
-        else if(i===9) return "Entregas"
-        else if(i===11) return "Cambios"
-        else if(i===15) return "Presentismo"
-        else if(i===17) return "Altas"
-    }
-
     const createNovedad = () => {
         const username = localStorage.getItem('username')
         if(categoria.length > 0 && descripcion.length > 50 && username && legajo && 
@@ -368,14 +358,8 @@ export default function CrearNovedadS () {
                         <select name="causa" id="causa-selecet" style={filterSelect}
                         onChange={e=>setCategoria(e.target.value)} value={categoria}>
                             <option value={''}>---</option>
-                            {categoriasSele.map((c,i) => (
-                                i===0 || i==2 || i==6 || i==9 || i==11 || i==15|| i==17? 
-                                <>
-                                <option value={""}>----------{sectionActionReturner(i)}----------</option> 
-                                <option key={c} value={c}>{c}</option>
-                                </>
-                                : 
-                                <option key={c} value={c}>{c}</option>
+                            {categoriasSele.map((c) => (
+                                <option key={c.categoria_id} value={c.descripcion}>{c.descripcion}</option>
                             ))}
                         </select>
                     </div>
@@ -429,14 +413,8 @@ export default function CrearNovedadS () {
                             <select name="causa" id="causa-selecet" style={filterSelect}
                             onChange={e=>setCategoria(e.target.value)} value={categoria}>
                                 <option value={''}>---</option>
-                            {categoriasSele.map((c,i) => (
-                                i===0 || i==2 || i==6 || i==9 || i==11 || i==15|| i==17? 
-                                <>
-                                <option value={""}>----------{sectionActionReturner(i)}----------</option> 
-                                <option key={c} value={c}>{c}</option>
-                                </>
-                                : 
-                                <option key={c} value={c}>{c}</option>
+                            {categoriasSele.map((c) => (
+                                <option key={c.categoria_id} value={c.descripcion}>{c.descripcion}</option>
                             ))}
                             </select>
                     </div>

@@ -5,6 +5,16 @@ export interface ISession {
     empresa: string
 }
 
+export interface ICategoria {
+    categoria_id:number,
+    descripcion:string,
+    licencia:boolean,
+    ausente:boolean,
+    alta:boolean,
+    sancion:boolean,
+    personal:boolean
+}
+
 export interface INovedad {
     novedad_id: number,
     solicitante: string,
