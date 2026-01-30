@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import Header from "./Header"
 import session from "../utils/session"
-import type { IEmpresa, ILegajo, INovDto } from "../utils/interfaces"
+import type { ICategoria, IEmpresa, ILegajo, INovDto } from "../utils/interfaces"
 import { getCategoriasNov, getEmpresas, getAllLegajos, getAllLegajosNoEmp } from "../utils/getData"
 import postNovedad from "../utils/postNovedad"
 
@@ -10,7 +10,7 @@ export default function CrearNovedad () {
     
     const [categoria, setCategoria] = useState('')
     const [empresasSele, setEmpresasSele] = useState<IEmpresa[]>([])
-    const [categoriasSele, setCategoriesSele] = useState<string[]>([])
+    const [categoriasSele, setCategoriesSele] = useState<ICategoria[]>([])
     const [legajos, setLegajos] = useState<ILegajo[]>([])
     const [legajosF, setLegajosF] = useState<ILegajo[]>([])
     const [legajosS, setLegajosS] = useState<string>('')
@@ -236,7 +236,7 @@ export default function CrearNovedad () {
                     onChange={e=>setCategoria(e.target.value)} value={categoria}>
                         <option value={''}>---</option>
                         {categoriasSele.map((c) => (
-                            <option key={c} value={c}>{c}</option>
+                            <option key={c.categoria_id} value={c.descripcion}>{c.descripcion}</option>
                         ))}
                     </select>
             </div>

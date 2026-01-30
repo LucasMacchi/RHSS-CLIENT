@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { IEmpresa, ILegajo, IServicio, IUsuario } from "./interfaces";
+import type { ICategoria, IEmpresa, ILegajo, IServicio, IUsuario } from "./interfaces";
 const SERVER = import.meta.env.VITE_SERVER;
 const SERVER2 = import.meta.env.VITE_SERVER_2;
 
@@ -14,10 +14,10 @@ export async function getEmpresas(): Promise<IEmpresa[]> {
         return []
     }
 }
-export async function getCategoriasNov(): Promise<string[]> {
+export async function getCategoriasNov(): Promise<ICategoria[]> {
     console.log("Categorias...")
     try {
-        const res: string[] = (await axios.get(SERVER+"/novedad/categories",{withCredentials: true})).data
+        const res: ICategoria[] = (await axios.get(SERVER+"/novedad/categories",{withCredentials: true})).data
         return res
     } catch (error) {
         console.log(error)

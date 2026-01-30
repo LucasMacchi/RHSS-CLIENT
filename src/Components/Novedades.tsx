@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { IEmpresa, INovedad, INovFilter, IUsuario } from "../utils/interfaces";
+import type { ICategoria, IEmpresa, INovedad, INovFilter, IUsuario } from "../utils/interfaces";
 import Header from "./Header";
 import getNovedades from "../utils/getNovedades";
 import { getCategoriasNov, getEmpresas, getUsuarios } from "../utils/getData";
@@ -18,7 +18,7 @@ export default function Novedades () {
     const [dateEnd, setDateEnd] = useState('')
     const [load, setLoading] = useState(false)
     const [empresasSele, setEmpresasSele] = useState<IEmpresa[]>([])
-    const [categoriasSele, setCategoriesSele] = useState<string[]>([])
+    const [categoriasSele, setCategoriesSele] = useState<ICategoria[]>([])
     const [usuarios, setUsuarios] = useState<IUsuario[]>([])
 
     useEffect(() => {
@@ -159,7 +159,7 @@ export default function Novedades () {
                     onChange={e=>setCategoria(e.target.value)} value={categoria}>
                         <option value={''}>---</option>
                         {categoriasSele.map((c) => (
-                            <option key={c} value={c}>{c}</option>
+                            <option key={c.categoria_id} value={c.descripcion}>{c.descripcion}</option>
                         ))}
                     </select>
                 </div>

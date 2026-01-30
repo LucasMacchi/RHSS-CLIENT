@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import type { IAlta, IAction, IEmpresa, INovedad, INovLeg } from "../utils/interfaces";
+import type { IAlta, IAction, IEmpresa, INovedad, INovLeg, ICategoria } from "../utils/interfaces";
 import { useParams } from "react-router";
 import Header from "./Header";
 import getUniqNovedad from "../utils/getUniqNovedad";
@@ -15,8 +15,8 @@ export default function NovedadDetail () {
     const [novedad, setNovedad] = useState<INovLeg>();
     const [empresasSele, setEmpresasSele] = useState<IEmpresa[]>([])
     const [novedadesLeg, setNovedadesLeg] = useState<INovedad[] | null>([])
-    const [categoriasSele, setCategoriesSele] = useState<string[]>([])
-    const [categoria, setCategoria] = useState(0)
+    const [categoriasSele, setCategoriesSele] = useState<ICategoria[]>([])
+    const [categoria, setCategoria] = useState(999)
     const [dataCheck, setDataCherck] = useState(false)
     const [concepto, setConcepto] = useState('')
     const [file, setFile] = useState<File | null>(null)
@@ -210,7 +210,7 @@ export default function NovedadDetail () {
         if(confirm('Quieres crear la accion?') && novedad && data.causa.length > 50 && data.date_start.length > 0) {
             const personal = {
                 fecha_ocurrido: data.date_start,
-                categoria: categoriasSele[categoria - 1],
+                categoria: categoriasSele[categoria].descripcion,
                 legajo: novedad.legajo.legajo,
                 novedad_id: novedad.novedad.novedad_id,
                 causa: data.causa
@@ -232,7 +232,7 @@ export default function NovedadDetail () {
                 legajo: novedad.legajo.legajo,
                 novedad: novedad.novedad.novedad_id,
                 causa: data.causa,
-                categoria: categoriasSele[categoria - 1]
+                categoria: categoriasSele[categoria].descripcion
             }
             const res = await createLicenciaFn(licencia)
             if(res) {
@@ -252,7 +252,7 @@ export default function NovedadDetail () {
                     legajo: novedad.legajo.legajo,
                     novedad_id: novedad.novedad.novedad_id,
                     causa: data.causa,
-                    tipo: "SUSPENCION"
+                    tipo: categoriasSele[categoria].descripcion
                 }
                 const res = await createSancionFn(sancion)
                 if(res) {
@@ -269,7 +269,7 @@ export default function NovedadDetail () {
                     legajo: novedad.legajo.legajo,
                     novedad_id: novedad.novedad.novedad_id,
                     causa: data.causa,
-                    tipo: "APERCIBIMIENTO"
+                    tipo: categoriasSele[categoria].descripcion
                 }
                 const res = await createSancionFn(sancion)
                 if(res) {
@@ -352,6 +352,242 @@ export default function NovedadDetail () {
     }
 
     const displayForms = () => {
+        if(categoriasSele[categoria] || categoria === 100 || categoria === 101 || categoria === 102){
+            const cat = categoriasSele[categoria]
+            if( categoriasSele[categoria] && cat.alta){
+                return(
+                    <div style={sectionActionStyle}>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Fecha de Ingreso: </h3></th>
+                                    <th><input type="date" value={altaData.fecha_ingreso} onChange={e => handleAlta('fecha_ingreso',e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>CUIL:</h3></th>
+                                    <th><input type="number" value={altaData.cuit} onChange={e => handleAlta("cuit",e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Direccion:</h3></th>
+                                    <th><input type="text" value={altaData.direccion} onChange={e => handleAlta("direccion",e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Nacimiento:</h3></th>
+                                    <th><input type="date" value={altaData.nacimiento} onChange={e => handleAlta("nacimiento",e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Jornada:</h3></th>
+                                    <th>
+                                        <select name="causa" id="causa-selecet" style={filterSelectSmall}
+                                        onChange={e=>handleAlta("jornada" ,e.target.value)} value={altaData.jornada}>
+                                            <option value={''}>---</option>
+                                            <option value={'Completa'}>JORNADA COMPLETA</option>
+                                            <option value={'Parcial'}>JORNADA PARCIAL</option>
+                                        </select>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Categoria:</h3></th>
+                                    <th><input type="text" value={altaData.categoria} onChange={e => handleAlta("categoria",e.target.value)}/></th>
+                                </tr>
+                                <tr>
+                                    <th><h3 id="titulo" style={textStyle}>Lugar de Trabajo:</h3></th>
+                                    <th>
+                                        <textarea value={altaData.lugar} onChange={e => handleAlta('lugar',e.target.value)}
+                                        style={textAreaStyle}/>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createAlta()}>Registrar Alta</button>
+                        </div>
+                    </div>
+                )
+            }
+            else if(categoriasSele[categoria] && cat.ausente) {
+                return(
+                    <div style={sectionActionStyle}>
+                        <h3 id="titulo" style={textStyle}>Fecha: 
+                            <input type="date" value={data.date_start} onChange={e => handleData('date_start',e.target.value)}/>
+                        </h3>
+                        <h3 id="titulo" style={textStyle}>Justificacion: 
+                            <input type="checkbox" checked={dataCheck} onChange={e => setDataCherck(e.target.checked)}/>
+                        </h3>
+                        <div>
+                            <h3 id="subtitulo" style={textStyle}>
+                                Descripcion
+                            </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {data.causa.length}
+                            </h5>
+                            <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
+                            style={textAreaStyle}/>
+                        </div>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createAusente()}>Registrar Ausente</button>
+                        </div>
+                    </div>
+                )
+            }
+            else if(categoriasSele[categoria] && cat.licencia) {
+                return(
+                    <div style={sectionActionStyle}>
+                        <h3 id="titulo" style={textStyle}>Fecha de salida: 
+                            <input type="date" value={data.date_start} onChange={e => handleData('date_start',e.target.value)}/>
+                        </h3>
+                        <h3 id="titulo" style={textStyle}>Fecha de entrada: 
+                            <input type="date" value={data.date_end} onChange={e => handleData('date_end',e.target.value)}/>
+                        </h3>
+                        <div>
+                            <h3 id="subtitulo" style={textStyle}>
+                                Descripcion
+                            </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {data.causa.length}
+                            </h5>
+                            <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
+                            style={textAreaStyle}/>
+                        </div>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createLicencia()}>Registrar Licencia</button>
+                        </div>
+                    </div>
+                )
+            }
+            else if(categoriasSele[categoria] && cat.personal) {
+                return(
+                    <div style={sectionActionStyle}>
+                        <h3 id="titulo" style={textStyle}>Fecha Ocurrido: 
+                            <input type="date" value={data.date_start} onChange={e => handleData('date_start',e.target.value)}/>
+                        </h3>
+                        <div>
+                            <h3 id="subtitulo" style={textStyle}>
+                                Descripcion
+                            </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {data.causa.length}
+                            </h5>
+                            <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
+                            style={textAreaStyle}/>
+                        </div>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createPersonal()}>Registrar Situacion</button>
+                        </div>
+                    </div>
+                )
+            }
+            else if(categoriasSele[categoria] && cat.sancion && cat.descripcion === 'SUSPENSION') {
+                return(
+                    <div style={sectionActionStyle} >
+                        <h3 id="titulo" style={textStyle}>Fecha de inicio: 
+                            <input type="date" value={data.date_start} onChange={e => handleData('date_start',e.target.value)}/>
+                        </h3>
+                        <h3 id="titulo" style={textStyle}>Fecha de final: 
+                            <input type="date" value={data.date_end} onChange={e => handleData('date_end',e.target.value)}/>
+                        </h3>
+                        <div>
+                            <h3 id="subtitulo" style={textStyle}>
+                                Descripcion
+                            </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {data.causa.length}
+                            </h5>
+                            <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
+                            style={textAreaStyle}/>
+                        </div>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createSancion(true)}>Registrar Sancion</button>
+                        </div>
+                    </div>
+                )
+            }
+            else if(categoriasSele[categoria] && cat.sancion) {
+                return(
+                    <div style={sectionActionStyle}>
+                        <div>
+                            <h3 id="subtitulo" style={textStyle}>
+                                Descripcion
+                            </h3>
+                            <h5 id="subtitulo" style={{fontWeight: "bold", color: "#3399ff"}}>
+                                Minimo de 50 caracteres - Actuales {data.causa.length}
+                            </h5>
+                            <textarea value={data.causa} onChange={e => handleData('causa',e.target.value)}
+                            style={textAreaStyle}/>
+                        </div>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createSancion(false)}>Registrar Sancion</button>
+                        </div>
+                    </div>
+                )
+            }
+            else if(categoria === 100) {
+                return(
+                    <div style={sectionActionStyle}>
+                        <h3 id="subtitulo" style={textStyle}>
+                            Concepto
+                        </h3>
+                        <input style={{width: "300px"}} type="text" value={concepto} onChange={e => setConcepto(e.target.value)}/>
+                        <h3 id="subtitulo" style={textStyle}>
+                            Archivo
+                        </h3>
+                        <h5 id="subtitulo" style={{...textStyle, margin: "5px"}}>Limite de 10MB</h5>
+                        <input style={{width: "300px", marginBottom: "30px"}} type="file" onChange={e => e.target.files && setFile(e.target.files[0])}/>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => createArchivo()}>Subir Archivo</button>
+                        </div>
+                    </div>
+                )
+            }
+            else if(categoria === 101) {
+                return (
+                    <div style={{...sectionActionStyle, marginTop: "30px"}}>
+                    <h4 id="titulo" style={{fontWeight: "bold", color: "crimson", margin: "10px"}}>Haga click en el archivo que desee eliminar.</h4>
+                    <table style={{width: "400px"}}>
+                        <tbody>
+                            <tr>
+                                <th style={novTr}>Tipo</th>
+                                <th style={novTr}>Fecha</th>
+                                <th style={novTr}>Categoria/Concepto</th>
+                            </tr>
+                            {novedad?.archivos.map((a) => (
+                            <tr onClick={() => deleteFile(a.ruta, a.concepto, a.archivo_id)}>
+                                <th style={novTr}>Archivo</th>
+                                <th style={novTr}>{a.fecha}</th>
+                                <th style={novTr}>{a.concepto}</th>
+                            </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    </div>
+                )
+            }
+            else if(categoria === 102) {
+                return (
+                    <div style={{...sectionActionStyle, marginTop: "30px"}}>
+                        <div>
+                            <button id="bg-btn" style={btnRegister}
+                            onClick={() => changeStateNov()}>{novedad?.novedad.cerrado ? "REABRIR NOVEDAD" : "CERRAR NOVEDAD"}</button>
+                        </div>
+                    </div>
+                )
+            }
+            else {
+                return(
+                <div style={sectionActionStyle}>
+                    <h3 id="titulo" style={textStyle}>Ninguna categoria seleccionada.</h3>
+                </div>
+                )
+            }
+        }
+        /*
         switch(categoria) {
             case 1:
                 return(
@@ -618,6 +854,7 @@ export default function NovedadDetail () {
                 </div>
                 )
         }
+        */
     }
 
     const displayAction = () => {
@@ -628,7 +865,7 @@ export default function NovedadDetail () {
                     <hr color='#3399ff' style={{width: "100%"}}/>
                     <h3 id="titulo" style={textStyle}>Fecha de lo ocurrido o inicial: {action.fecha_inicial}</h3>
                     {action.fecha_final  ? 
-                    <h3 id="titulo" style={textStyle}>Fecha final: {action.fecha_inicial}</h3> : ''}
+                    <h3 id="titulo" style={textStyle}>Fecha final: {action.fecha_final}</h3> : ''}
                     <h3 id="titulo" style={textStyle}>Causa:</h3>
                     <div style={{textAlign: "start", width: "400px"}}>
                         <p id="titulo" style={parrafoStyle}>{action.causa}</p>
@@ -755,15 +992,15 @@ export default function NovedadDetail () {
                 <hr color='#3399ff' style={{width: "100%"}}/>
                 <select name="causa" id="causa-selecet" style={filterSelect}
                 onChange={e=>setCategoria(parseInt(e.target.value))} value={categoria}>
-                    <option value={0}>---</option>
+                    <option value={999}>---</option>
                     {categoriasSele.map((c,i) => (
-                        <option style={{border: "1px solid"}} key={c} value={(i+1)}>{c}</option>
+                        <option style={{border: "1px solid"}} key={c.descripcion} value={(i)}>{c.descripcion}</option>
                     ))}
-                    <option value={0}>---------------{"Archivos"}-----------</option>
-                    <option value={25}>SUBIR ARCHIVO</option>
-                    <option value={26}>ELIMINAR ARCHIVO</option>
-                    <option value={0}>---------------{"Novedad"}-----------</option>
-                    <option value={27}>{novedad?.novedad.cerrado ? "REABRIR NOVEDAD" : "CERRAR NOVEDAD"}</option>
+                    <option value={999}>---------------{"Archivos"}-----------</option>
+                    <option value={100}>SUBIR ARCHIVO</option>
+                    <option value={101}>ELIMINAR ARCHIVO</option>
+                    <option value={999}>---------------{"Novedad"}-----------</option>
+                    <option value={102}>{novedad?.novedad.cerrado ? "REABRIR NOVEDAD" : "CERRAR NOVEDAD"}</option>
                 </select>
                 {displayForms()}
                 {displayAction()}
