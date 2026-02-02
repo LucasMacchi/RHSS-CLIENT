@@ -175,7 +175,7 @@ export default function NovedadDetail () {
                 causa: data.causa,
                 isMed: false
             }
-            if(categoria === 16){
+            if(categoriasSele[categoria].descripcion === "AUSENTE"){
                 const res = await createAusenteFn(ausente)
                 if(res) {
                     alert("Ausente creado.")
@@ -184,7 +184,7 @@ export default function NovedadDetail () {
                 }
                 else alert("Error al crear ausente.")
             }
-            else if(categoria === 23){
+            else if(categoriasSele[categoria].descripcion === "MEDIO AUSENTE"){
                 ausente.isMed = true
                 const res = await createMedAusenteFn(ausente)
                 if(res) {
