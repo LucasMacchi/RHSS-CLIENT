@@ -28,15 +28,22 @@ export default function CrearNovedad () {
 
     useEffect(()=>{
         session(true)
-        const empresa = localStorage.getItem("empresa")
         getEmpresas().then(em=>setEmpresasSele(em))
         getCategoriasNov().then(cats=>setCategoriesSele(cats))
-        if(empresa !== null && empresa === "Tuicha") {getAllLegajos(empresa).then(lg=>setLegajos(lg))}
+        getAllLegajosNoEmp().then(lg=>setLegajos(lg))
+
+    },[])
+
+    useEffect(() => {
+        let empresaName = ""
+        empresasSele.forEach(e => {
+            if(empresa === e.empresa_id) empresaName = e.nombre
+        });
+        if(empresa !== null && empresaName.length > 0) {getAllLegajos(empresaName).then(lg=>setLegajos(lg))}
         else {
             getAllLegajosNoEmp().then(lg=>setLegajos(lg))
         }
-
-    },[])
+    },[empresa])
 
     useEffect(() => {
         let arr = legajos
