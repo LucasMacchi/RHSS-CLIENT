@@ -89,9 +89,11 @@ export default function NovedadDetail () {
     },[])
 
     useEffect(() => {
-        if(novedad?.legajo.legajo)[
-            getNovsLegajo(novedad?.legajo.legajo)
-        ]
+        console.log("dadad")
+        console.log(novedad)
+        if(novedad?.legajo.legajo && novedad.novedad.empresaId){
+            getNovsLegajo(novedad?.legajo.legajo,novedad.novedad.empresaId)
+        }
         
     },[novedad])
 
@@ -124,7 +126,7 @@ export default function NovedadDetail () {
     }
 
     const empresaGetter = (id: number | undefined): string => {
-        if(novedad && novedad.novedad.empresa_id) {
+        if(novedad && novedad.novedad.empresaId) {
             let empresa = 'NaN'
             empresasSele.forEach(em => {
                 if(em.empresa_id === id) {
@@ -136,9 +138,12 @@ export default function NovedadDetail () {
         else return "NaN"
     }
 
-    const getNovsLegajo = async (legajo: number) => {
+    const getNovsLegajo = async (legajo: number,empresa:number) => {
         setNovedadesLeg(null)
-        const novs = await getNovedadesLegajo(legajo)
+        const novs = await getNovedadesLegajo(legajo,empresa)
+        ///WIP
+        console.log("cacacac")
+        console.log(novs,legajo,empresa)
         if(novs && novs.length > 0) setNovedadesLeg(novs)
     }
 
@@ -929,7 +934,7 @@ export default function NovedadDetail () {
                             </tr>
                             <tr >
                                 <th><h3 id="titulo" style={textStyle}>Empresa:</h3></th>
-                                <th><h3 id="titulo" style={textStyleData}>{empresaGetter(novedad?.novedad.empresa_id)}</h3></th>
+                                <th><h3 id="titulo" style={textStyleData}>{empresaGetter(novedad?.novedad.empresaId)}</h3></th>
                             </tr>
                         </tbody>
                     </table>

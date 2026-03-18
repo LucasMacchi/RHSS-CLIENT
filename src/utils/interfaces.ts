@@ -20,7 +20,7 @@ export interface INovedad {
     solicitante: string,
     legajo: number,
     causa: string,
-    empresa_id: number,
+    empresaId: number,
     usuario_id: number,
     fecha: string,
     numero: string,
@@ -140,7 +140,6 @@ export interface INovLeg {
     licencias: ILicencia[],
     archivos: IArchivo[],
     altas: IAlta[]
-
 }
 
 export interface IAction {

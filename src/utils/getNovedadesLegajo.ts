@@ -4,9 +4,9 @@ import type { INovedad } from "./interfaces";
 const SERVER = import.meta.env.VITE_SERVER;
 
 
-export default async function (legajo: number): Promise<INovedad[]> {
+export default async function (legajo: number,empresa:number): Promise<INovedad[]> {
     try {
-        const res: INovedad[] = (await axios.get(SERVER+"/novedad/legajo/"+legajo, {withCredentials: true})).data
+        const res: INovedad[] = (await axios.get(SERVER+"/novedad/legajo/"+legajo+"/"+empresa, {withCredentials: true})).data
         return res
     } catch (error) {
         console.log(error)
