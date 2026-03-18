@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Header from "./Header";
-import type { ILegajo, INovedad } from "../utils/interfaces";
-import { getLegajos } from "../utils/getData";
+import type { IEmpresa, ILegajo, INovedad } from "../utils/interfaces";
+import { getEmpresas, getLegajos } from "../utils/getData";
 import getNovedadesLegajo from "../utils/getNovedadesLegajo";
 import session from "../utils/session";
 
@@ -11,10 +11,12 @@ export default function Legajos () {
     const [legajosS, setLegajosS] = useState<string>('')
     const [novedades, setNovedades] = useState<INovedad[] | null>()
     const [egressed, setEgress] = useState(false)
+    const [empresasSele, setEmpresasSele] = useState<IEmpresa[]>([])
     const [legajoN, setLegajoN] = useState<ILegajo>({legajo: 0, cuil: 0, fullname: '', sector: '', direccion: '', fecha_egreso: '', email: '', empresa: '', telefono: 0})
 
     useEffect(() => {
         session(true)
+        getEmpresas().then(em=>setEmpresasSele(em))
     },[])
 
     const fetchLegajos = async () => {
@@ -33,7 +35,12 @@ export default function Legajos () {
     const getNovsLegajo = async (legajo: ILegajo) => {
         setNovedades(null)
         setLegajoN(legajo)
-        const novs = await getNovedadesLegajo(legajo.legajo)
+        let empresaId = 0
+        empresasSele.forEach(em => {
+            if(em.nombre === legajo.empresa) empresaId = em.empresa_id
+        });
+        console.log(empresaId)
+        const novs = await getNovedadesLegajo(legajo.legajo,empresaId)
         if(novs && novs.length > 0) setNovedades(novs)
     }
 
