@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import logo from "../assets/sistemasLogo.jpg";
 import { Link, useLocation } from "react-router";
 import logoutFn from "../utils/logoutFn";
 
@@ -30,7 +29,6 @@ export default function Header () {
         if(navbar) {
             return (
                 <div>
-                    <img src={logo} alt="Logo" style={{maxWidth: "180px", width: "100%"}}/>
                     <div style={{
                     backgroundColor: "#6495ed",
                     display: "flex",
@@ -51,11 +49,6 @@ export default function Header () {
                     </div>
                 </div>
                 </div>
-            )
-        }
-        else{
-            return(
-                <img src={logo} alt="Logo" style={{maxWidth: "250px", width: "100%"}}/>
             )
         }
     }
